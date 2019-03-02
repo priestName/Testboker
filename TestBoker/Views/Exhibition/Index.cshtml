@@ -1,0 +1,35 @@
+﻿@model TestBoker.Models.HomeViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/_LayoutDefault.cshtml";
+}
+<link href="~/Content/Css/Exhibition.css" rel="stylesheet" />
+<div class="Search">
+    <div class="SearchBox">
+        <div class="SearchBut"><i class="fa fa-search"></i></div>
+        <div class="SearchType"><input type="text" /></div>
+    </div>
+</div>
+<div class="ContentMain">
+    @foreach (var item in Model.exhibitionList)
+    {
+        <div class="ContentList" id="cl(@item.Id)">
+            <a href="#">
+                <div class="img">@item.Img</div>
+                <div class="title">@item.Title</div>
+            </a>
+        </div>
+    }
+    @section style
+{
+        <style>
+            .top {
+                height: 93%;
+            }
+
+            .ContentMain {
+                height: 94%;
+            }
+        </style>
+    }
+</div>

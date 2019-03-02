@@ -1,0 +1,121 @@
+﻿@model Testboker.admin.Models.HomeViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/_LayoutDefault.cshtml";
+}
+<div class="Main">
+    <div class="Select">
+        <select class="SelectType">
+            <option value="0">全部</option>
+            <option value="1">标题</option>
+            <option value="2">内容</option>
+            <option value="3">标签</option>
+        </select>
+        <input class="ItemMain" type="text" />
+        <label>添加时间：</label><input class="AddTime" type="text" />
+        <input type="button" class="SaveBut" value="查询" />
+        <input id="IsShow" class="IsShow" type="checkbox"/><label for="IsShow">屏蔽不展示内容</label>
+    </div>
+    <table class="ContentList">
+        <tr class="TableTiTle">
+            <td>ID</td>
+            <td>标题</td>
+            <td>图片</td>
+            <td>标签</td>
+            <td>上传时间</td>
+            <td>是否展示</td>
+            <td>操作</td>
+        </tr>
+        @foreach (var item in Model.ContentList)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Title</td>
+                <td>@item.Img</td>
+                <td>@item.Label</td>
+                <td>@item.Time</td>
+                <td>@Html.Encode(item.IsShow ? "是" : "否")</td>
+                <td class="Operation" width="80px">
+                    <a class="Edit" href="#"><i class="fa fa-pencil"></i></a>
+                    <a class="Save hides" href="#"><i class="fa fa-check"></i></a>
+                    <a class="ThisMain"  href="#"><i class="fa fa-list"></i></a>
+                </td>
+            </tr>
+        }
+    </table>
+    <div class="Foot">每页显示行数：<input class="Page" type="text" value="20"/><span class="PageIs"></span></div>
+</div>
+@section style{
+    <style type="text/css">
+        .Select {
+            padding-bottom:15px;
+        }
+        .Main .Select input[type=text] {
+            width:120px;
+        }
+        .Page {
+            width:30px;
+        }
+        .SelectType {
+            height:24px;
+        }
+        .SaveBut {
+            height:24px;
+            width:50px;
+        }
+        .TableTiTle {
+            text-align:center;
+        }
+        .Operation a:first-child {
+            padding-left:7px;
+        }
+        .Operation a i{
+            width:30px;
+            text-align:center;
+        }
+        .hides {
+            display:none;
+        }
+        .Foot {
+            padding-top:15px;
+        }
+    </style>
+}
+@section Script{
+    <script type="text/javascript">
+        $(function () {
+            var PageIs = 1;
+            var PagesMath = Math.ceil(($(".ContentList").find("tr").length - 1) / $(".Page").val())
+            for (var i = ($(".Page").val() * PageIs) + 1 ; i < $(".ContentList").find("tr").length; i++) {
+                $($(".ContentList").find("tr")[i]).hide()
+            }
+            $(".PageIs").html("第" + PageIs + "页/共" + PagesMath + "页")
+            if (Cookie.get("ContentListShow") == 1)
+                $("#IsShow").attr("checked", "true")
+            else
+                $("#IsShow").attr("checked", "false")
+            $("#IsShow").click(function () {
+                Cookie.set("ContentListShow", $("#IsShow").prop("checked")?"1":"0", "")
+            })
+            $(".Edit").click(function () {
+                var Rows = $(this).parents("tr").children();
+                var IsEdit = $(this).children("i").hasClass("fa-pencil");
+                for (var i = 1; i < Rows.length - 1; i++) {
+                    $(Rows[i]).width($(Rows[i]).width())
+                    if (IsEdit)
+                        $(Rows[i]).html("<input class='td" + i + "' type='text' value='" + $(Rows[i]).html() + "'  style='width:100%' />")
+                    else
+                        $(Rows[i]).html($(Rows[i]).children("input").val())
+                }
+                if (IsEdit) {
+                    $(this).children("i").removeClass("fa-pencil").addClass("fa-remove")
+                    $(".Save").show(); $(".ThisMain").hide();
+                }
+                else{
+                    $(this).children("i").removeClass("fa-remove").addClass("fa-pencil")
+                    $(".Save").hide(); $(".ThisMain").show();
+                }
+            })
+        })
+    </script>
+}

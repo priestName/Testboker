@@ -1,0 +1,15 @@
+﻿
+@{
+    Layout = "~/Views/_LayoutDefault.cshtml";
+}
+<div class="banner">
+    <div class="banner_Images">
+        <div class="banner_Image">
+            @Html.Action("Banner", "Home")
+        </div>
+    </div>
+    <div class="bannerIon"></div>
+</div>
+@RenderBody()
+
+

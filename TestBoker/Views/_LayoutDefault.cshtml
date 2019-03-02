@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/scripts/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="~/Content/Css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link href="~/Content/Css/Default.css" rel="stylesheet" />
+    <script src="~/scripts/Default.js"></script>
+    @RenderSection("style", false)
+</head>
+<body>
+    <div class="top">
+        @RenderBody()
+    </div>
+    <div class="nav">
+        <div><a href="@Url.Action("index", "Home")"><i class="fa fa-home fa-2x"></i></a></div>
+        <div><a href="@Url.Action("index", "ContentList")"><i class="fa fa-list fa-2x"></i></a></div>
+        <div><a href="@Url.Action("index", "Exhibition")"><i class="fa fa-window-restore fa-2x"></i></a></div>
+    </div>
+    @RenderSection("Script", false)
+</body>
+</html>

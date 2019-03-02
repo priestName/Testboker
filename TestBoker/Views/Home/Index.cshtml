@@ -1,0 +1,18 @@
+﻿@model TestBoker.Models.HomeViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/_LayoutBanner.cshtml";
+}
+<link href="~/Content/Css/Index.css" rel="stylesheet" />
+<div class="ContentMain">
+    @foreach (var item in Model.contentList)
+    {
+        <div class="ContentList" id="cl(@item.Id)">
+            <div class="img">@item.Img</div>
+            <div class="contentMain">
+                <div class="title">@item.Title</div>
+                <p class="content">@item.Content</p>
+            </div>
+        </div>
+    }
+</div>

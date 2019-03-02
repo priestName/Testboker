@@ -1,0 +1,82 @@
+﻿.ContentList {
+    border:1px solid #808080;
+    box-sizing: border-box;
+    width:100px;
+    height:130px;
+    padding-top:5px;
+    float:left;
+    margin:5px;
+    margin-right:0px;
+    text-align:center;
+}
+.img {
+    border:1px solid #808080;
+    box-sizing: border-box;
+    width:88px;
+    height:88px;
+    float:left;
+    margin:5px;
+    float:none;
+}
+.contentMain {
+    height:100%;
+}
+.title {
+    font-weight:bold;
+    font-family:微软雅黑;
+
+    overflow:hidden;
+    text-overflow:ellipsis;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2; 
+    white-space:nowrap
+}
+
+.content {
+    font-family:仿宋;
+    margin-top:8px;
+    font-size: 16px;
+    line-height:24px;
+    text-indent:16px;
+
+    overflow:hidden;
+    text-overflow:ellipsis;
+    display:-webkit-box; 
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2; 
+}
+.Search {
+    width: 100%;
+    height: 5%;
+    min-height:30px;
+    margin-bottom:10px;
+    box-shadow:0 0 20px rgba(0, 0, 0, 0.58);
+    text-align:center;
+    border-radius:5px;
+}
+.SearchBox {
+    width:100%;
+    height:100%;
+    border:1px solid #808080;
+    box-sizing:border-box;
+    border-radius:5px;
+}
+.SearchBox div {
+float:left;
+}
+.SearchType {
+    height:100%;
+    width:90%;
+}
+.SearchType input {
+    height:calc(100%);
+    width:calc(100%);
+    border-radius:5px;
+    border:none;
+    outline:none
+}
+.SearchBut {
+    height:100%;
+    width:10%;
+    line-height:25px;
+}

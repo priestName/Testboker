@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/scripts/jquery-1.10.2.min.js"></script>
+    <link rel="stylesheet" href="~/Content/Css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/Css/Default.css" rel="stylesheet" />
+    <script src="~/scripts/Default.js"></script>
+    @RenderSection("Style", false)
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div class="Top"></div>
+    <div class="left">
+        @Html.Action("Nav", "Home")
+    </div>
+    <div class="Content">
+        @RenderBody()
+    </div>
+    @RenderSection("Script", false)
+<script type="text/javascript">
+</script>
+</body>
+</html>
