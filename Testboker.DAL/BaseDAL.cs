@@ -53,7 +53,7 @@ namespace Testboker.DAL
             result = isAsc ? result.OrderBy(orderByLamebda) : result.OrderByDescending(orderByLamebda);
             //分页
             var offset = (pageIndex - 1) * pageSize;//开始项索引
-            result.Skip(offset).Take(pageSize);
+            result=result.Skip(offset).Take(pageSize);
             return result;
         }
 

@@ -54,7 +54,7 @@ namespace Testboker.IBLL
         /// <typeparam name="TType"></typeparam>
         /// <param name="pageSize">每页行数</param>
         /// <param name="pageIndex">起始项</param>
-        /// <param name="isAsc">是否倒序</param>
+        /// <param name="isAsc">排序方式</param>
         /// <param name="whereLamebda">条件n => true(查全部) n => n.?=?</param>
         /// <param name="orderByLamebda">排序方法</param>
         /// <returns></returns>

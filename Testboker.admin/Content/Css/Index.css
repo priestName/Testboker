@@ -1,0 +1,160 @@
+﻿* {
+    padding: 0;
+    margin: 0;
+}
+
+html, body {
+    width: 100%;
+    height: calc(100% - 5px);
+    background-color: #dbdbdb;
+}
+
+li {
+    list-style-type: none;
+}
+
+a {
+    color: #000;
+    text-decoration: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-user-select: none;
+    -moz-user-focus: none;
+    -moz-user-select: none;
+}
+
+a:hover {
+    text-decoration: none;
+    color: #000;
+}
+a:active {
+    text-decoration: none;
+    color: #000;
+}
+
+.Main {
+    height: calc(100% - 20px);
+    width: calc(100% - 40px);
+    background-color: #dbdbdb;
+    margin: 10px 20px;
+}
+
+    .Main table {
+        width: 100%;
+    }
+
+        .Main table tr td {
+            border: 1px solid #000;
+        }
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.Select {
+    padding-bottom: 15px;
+}
+
+.Main .Select input[type=text] {
+    width: 120px;
+}
+
+.SelectType {
+    height: 24px;
+}
+
+.SaveBut {
+    height: 24px;
+    width: 50px;
+}
+
+.TableTiTle {
+    text-align: center;
+}
+
+.Operation a:first-child {
+    padding-left: 7px;
+}
+
+.Operation a i {
+    width: 30px;
+    text-align: center;
+}
+
+.hides {
+    display: none;
+}
+
+.Foot {
+    padding-top: 15px;
+}
+
+.Foot span {
+    float:left;
+}
+.ContentLists {
+    max-height: calc(100% - 90px);
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.ContentLists::-webkit-scrollbar {
+    display: none;
+}
+
+.Page {
+    padding-right:10px;
+    height:34px;
+    line-height:34px;
+}
+.IsPage {
+    width:30px;
+}
+.IsPageGo input {
+    margin-top:5px;
+}
+.IsPageGo {
+    margin-left:10px;
+}
+.PageItems {
+    width:30px;
+    margin-top:6px;
+    border:1px solid #dbdbdb;
+    background-color:#dbdbdb;
+}
+.PageItems:hover {
+    border-color:#808080
+}
+.NumPager{
+    height:34px;
+    line-height:32px;
+    border:1px solid #ebebeb;
+}
+.NumPager a{
+    height:32px;
+    display:block;
+}
+.NumPager span a{
+    background-color:#ededed;
+    padding:0px 11px;
+}
+.NumPager span{
+    border-right:1px solid #d4d4d4;
+}
+.NumPager span:last-child {
+    border-right:none;
+}
+.NumPager span a:hover {
+    background-color:#dbdbdb;
+}
+.NumPager>.current{
+    padding:0px 11px;
+    background-color:#dbdbdb;
+    color:#000;
+}
+
+.NumPager>.disable {
+    padding:0px 11px;
+    background-color:#dbdbdb;
+    color:#000;
+}

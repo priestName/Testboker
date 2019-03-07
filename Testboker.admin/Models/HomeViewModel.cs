@@ -10,5 +10,8 @@ namespace Testboker.admin.Models
     {
         public IEnumerable<Banner> Banners { get; set; }
         public IEnumerable<ContentList> ContentList { get; set; }
+        public int PageCount = 1;
+        public int TableCount = 1;
+        public int PageSize = 20;
     }
 }

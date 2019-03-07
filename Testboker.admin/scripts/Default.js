@@ -9,6 +9,9 @@
             $(".Content ").width("calc(100% - 41px)")
         }, 500)
     })
+    $(".Nav a").click(function () {
+        $(".Default").attr("src", $(this).attr("Url"))
+    })
 })
 var Cookie = {
     set: function (name, value, seconds) {
@@ -28,6 +31,6 @@ var Cookie = {
         return "";
     },
     remove: function (name) {
-        lantelCookie.set(name, "", -1);
+        Cookie.set(name, "", -1);
     }
 }

@@ -22,6 +22,11 @@ a:hover {
     text-decoration:none;
     color:#000;
 }
+.Default {
+    width:100%;
+    height:99%;
+    border:none;
+}
 .Top {
     width:100%;
     height:10%;
@@ -71,20 +76,4 @@ a:hover {
     /*display:flex;
     justify-content:center;
     align-items:center;*/
-}
-.Main {
-    height:calc(100% - 20px);
-    width:calc(100% - 40px);
-    background-color:#dbdbdb;
-    margin:10px 20px;
-}
-.Main table {
-    width:100%;
-}
-.Main table tr td{
-    border:1px solid #000
-}
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
 }
