@@ -13,6 +13,8 @@
     <link href="~/Content/Css/Index.css" rel="stylesheet" />
     <script src="~/scripts/jquery-1.10.2.min.js"></script>
     <script src="~/scripts/Default.js"></script>
+    <script src="~/scripts/xcConfirm/xcConfirm.js"></script>
+    <link href="~/scripts/xcConfirm/Css/xcConfirm.css" rel="stylesheet" />
 </head>
 <body>
     <div class="Main">
@@ -26,7 +28,7 @@
             <input class="ItemMain" type="text" />
             <label>添加时间：</label><input class="AddTime" type="text" />
             <input type="button" class="SaveBut" value="查询" />
-            <input id="IsShow" class="IsShow" type="checkbox" /><label for="IsShow">屏蔽不展示内容</label>
+            <input id="NotIsShow" class="NotIsShow" type="checkbox"/><label for="NotIsShow">屏蔽不展示内容</label>
         </div>
         <div class="ContentLists">
             <table class="ContentList">
@@ -36,30 +38,31 @@
                     <td>图片</td>
                     <td>标签</td>
                     <td>上传时间</td>
-                    <td>是否展示</td>
+                    <td>最后修改时间</td>
                     <td>操作</td>
                 </tr>
                 @foreach (var item in Model.ContentList)
                 {
-                    <tr>
-                        <td>@item.Id</td>
-                        <td>@item.Title</td>
-                        <td>@item.Img</td>
-                        <td>@item.Label</td>
+                    <tr class="tr@(item.Id)">
+                        <td>@(Model.ContentList.IndexOf(item) + (Model.ContentList.CurrentPageIndex - 1) * Model.ContentList.PageSize+1)</td>
+                        <td><input type="text" readonly="readonly" class="Title" value="@item.Title"/></td>
+                        <td><input type="text" readonly="readonly" class="Img" value="@item.Img" /></td>
+                        <td><input type="text" readonly="readonly" class="Label" value="@item.Label" /></td>
                         <td>@item.Time</td>
-                        <td>@Html.Encode(item.IsShow ? "是" : "否")</td>
-                        <td class="Operation" width="80px">
-                            <a class="Edit" href="#"><i class="fa fa-pencil"></i></a>
-                            <a class="Save hides" href="#"><i class="fa fa-check"></i></a>
-                            <a class="ThisMain" href="#"><i class="fa fa-list"></i></a>
+                        <td>@item.LastTime</td>
+                        <td class="Operation" width="80px" id="@(item.Id)">
+                            <a class="IsShowOne" title="是否展示" id="@item.Id" isShow="@((!item.IsShow).ToString())"><i class='fa @Html.Encode(item.IsShow ? "fa-ban" : "fa-check-square-o")'></i></a>
+                            <a class="Edit" href="#" title="修改"><i class="fa fa-pencil"></i></a>
+                            <a class="Save hides" href="#" title="确认修改"><i class="fa fa-check"></i></a>
+                            <a class="ThisMain" href="#" title="详情/修改"><i class="fa fa-list"></i></a>
                         </td>
                     </tr>
                 }
             </table>
         </div>
         <div class="Foot">
-            <span class="Page">当前 @(Model.ContentList.CurrentPageIndex)页/共@(Model.ContentList.TotalItemCount/Model.ContentList.PageSize)页</span>
-            <span>每页&nbsp;<input type="text" class="PageItems" readonly="readonly" value="@Model.PageItems"/>行&nbsp;</span>
+            <span class="Page">当前第@(Model.ContentList.CurrentPageIndex)页/共@(Model.ContentList.TotalItemCount/Model.ContentList.PageSize)页</span>
+            <span>每页&nbsp;<input type="text" class="PageItems" readonly="readonly" value="@Model.PageItems"/>行&nbsp;/共@(Model.ContentList.TotalItemCount)条记录</span>
             @Html.Pager(Model.ContentList, new PagerOptions {
                 NumericPagerItemCount = 5,
                 PageIndexParameterName = "pageIndex",//控制器参数
@@ -89,36 +92,17 @@
 <script type="text/javascript">
     $(function () {
         if (Cookie.get("ContentListShow") == 1)
-            $("#IsShow").attr("checked", "true")
+            $("#NotIsShow").attr("checked", "checked")
         else
-            $("#IsShow").attr("checked", "false")
-        $("#IsShow").click(function () {
-            Cookie.set("ContentListShow", $("#IsShow").prop("checked")?"1":"0", "")
+            $("#NotIsShow").removeAttr("checked");
+        $("#NotIsShow").click(function () {
+            Cookie.set("ContentListShow", $("#NotIsShow").prop("checked") ? "1" : "0", "")
         })
-        $(".Edit").click(function () {
-            var Rows = $(this).parents("tr").children();
-            var IsEdit = $(this).children("i").hasClass("fa-pencil");
-            for (var i = 1; i < Rows.length - 1; i++) {
-                $(Rows[i]).width($(Rows[i]).width())
-                if (IsEdit)
-                    $(Rows[i]).html("<input class='td" + i + "' type='text' value='" + $(Rows[i]).html() + "'  style='width:100%' />")
-                else
-                    $(Rows[i]).html($(Rows[i]).children("input").val())
-            }
-            if (IsEdit) {
-                $(this).children("i").removeClass("fa-pencil").addClass("fa-remove")
-                $(".Save").show(); $(".ThisMain").hide();
-            }
-            else{
-                $(this).children("i").removeClass("fa-remove").addClass("fa-pencil")
-                $(".Save").hide(); $(".ThisMain").show();
-            }
-        })
-        $(".SaveBut").click(function(){
+        $(".SaveBut").click(function () {
             location.href="@Url.Action("Index", "ContentList")"
         })
         $(".PageGo").click(function () {
-            location.href = "@Url.Action("Index", "ContentList")?page=" + $(".IsPage").val();
+            location.href = "@Url.Action("Index", "ContentList")?pageIndex=" + $(".IsPage").val();
         })
         var IsPageItems = 0;
         $(".PageItems").click(function () {
@@ -131,6 +115,63 @@
                 location.href = "@Url.Action("Index", "ContentList")?pageItems=" + $(".PageItems").val();
             }
             $(this).attr("readonly", "readonly")
+        })
+        var _Title = "";
+        $(".Edit").click(function () {
+            var Rows = $(this).parents("td").attr("id");
+            var IsEdit = $(this).children("i").hasClass("fa-pencil");
+            if (IsEdit) {
+                $(".tr" + Rows).find("input").removeAttr("readonly").css("background-color", "#fff");
+                $("#Show" + Rows).removeAttr("disabled").css("background-color", "#fff");
+                $(this).children("i").removeClass("fa-pencil").addClass("fa-remove")
+                $(".Save").show(); $(".ThisMain").hide();
+            }
+            else {
+                $(".tr" + Rows).find("input").attr("readonly", "readonly").css("background-color", "#dbdbdb");
+                $("#Show" + Rows).attr("disabled", "disabled").css("background-color", "#dbdbdb");
+                $(this).children("i").removeClass("fa-remove").addClass("fa-pencil")
+                $(".Save").hide(); $(".ThisMain").show();
+            }
+        })
+        $(".Save").click(function () {
+            var Rows = $(this).parents("td").attr("id");
+            $.ajax({
+                url: "@Url.Action("EditContent", "ContentList")",
+                type: "post",
+                data: {
+                    id: Rows,
+                    Title: $(".tr" + Rows).find("Title").val(),
+                    Img: $(".tr" + Rows).find("Img").val(),
+                    Label: $(".tr" + Rows).find("Label").val()
+                },
+                success: function (result) {
+
+                }
+            })
+        })
+        $(".IsShowOne").click(function () {
+            var id=$(this).attr("id")
+            var isShow=$(this).attr("isShow")
+            $.ajax({
+                url: "@Url.Action("ListShow", "ContentList")",
+                data: { id: $(this).attr("id"), isShow: $(this).attr("isShow") },
+                type: "post",
+                success: function (result) {
+                    var txt = isShow == "True" ? "启用文章展示" : "隐藏文章";
+                    if (result == "True")
+                        txt = "成功";
+                    else txt = "失败";
+
+                    var option = {
+                        title: txt,
+                        btn: parseInt("0001", 2),
+                        onOk: function () {
+
+                        }
+                    }
+                    window.wxc.xcConfirm("提示", "custom", option);
+                }
+            })
         })
     })
 </script>

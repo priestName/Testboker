@@ -27,5 +27,6 @@ namespace Testboker.Model
         public string Label { get; set; }
 
         public DateTime Time { get; set; }
+        public string LastTime { get; set; }
     }
 }
