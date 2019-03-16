@@ -141,6 +141,8 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\ContentImg\aaa.jpg" />
+    <Content Include="Content\Css\Content.css" />
     <Content Include="Content\Css\Default.css" />
     <Content Include="Content\Css\font-awesome-4.7.0\css\font-awesome.css" />
     <Content Include="Content\Css\font-awesome-4.7.0\css\font-awesome.min.css" />
@@ -264,6 +266,7 @@
     <Content Include="Views\Home\Default.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\ContentList\Index.cshtml" />
+    <Content Include="Views\ContentList\ContentItem.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

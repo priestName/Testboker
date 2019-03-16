@@ -28,5 +28,8 @@ namespace Testboker.Model
 
         public DateTime Time { get; set; }
         public string LastTime { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string Author { get; set; }
     }
 }

@@ -54,7 +54,7 @@
                             <a class="IsShowOne" title="是否展示" id="@item.Id" isShow="@((!item.IsShow).ToString())"><i class='fa @Html.Encode(item.IsShow ? "fa-ban" : "fa-check-square-o")'></i></a>
                             <a class="Edit" href="#" title="修改"><i class="fa fa-pencil"></i></a>
                             <a class="Save hides" href="#" title="确认修改"><i class="fa fa-check"></i></a>
-                            <a class="ThisMain" href="#" title="详情/修改"><i class="fa fa-list"></i></a>
+                            <a class="ThisMain" href="@Url.Action("ContentItem","ContentList",new {id=item.Id })" title="详情/修改"><i class="fa fa-list"></i></a>
                         </td>
                     </tr>
                 }
