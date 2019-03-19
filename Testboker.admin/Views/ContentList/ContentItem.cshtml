@@ -22,10 +22,13 @@
             <li><label>标&nbsp;&nbsp;&nbsp;&nbsp;题：</label><input type="text" value="" class="Title" /></li>
             <li><label>作&nbsp;&nbsp;&nbsp;&nbsp;者：</label><input type="text" value="" class="Author" /></li>
             <li>
-                <label>是否展示：</label><input type="radio" id="IsShowY" class="IsShow" name="IsShow" /><label for="IsShowY">是</label>
+                <label>是否展示：</label><input type="radio" id="IsShowY" class="IsShow" name="IsShow" checked="checked" /><label for="IsShowY">是</label>
                 <input type="radio" id="IsShowN" class="IsShow" name="IsShow" /><label for="IsShowN">否</label>
             </li>
-            <li><label>配&nbsp;&nbsp;&nbsp;&nbsp;图：</label><img src="" class="Img" /></li>
+            <li>
+                <label>配&nbsp;&nbsp;&nbsp;&nbsp;图：</label><img src="" class="Img" />
+                <input type="hidden" value="" class="ImgName" />
+            </li>
             <li><label>标&nbsp;&nbsp;&nbsp;&nbsp;签：</label><input type="text" value="" class="Label" /><span>*多个标签用逗号(,)隔开</span></li>
             <li><label>内&nbsp;&nbsp;&nbsp;&nbsp;容：</label><textarea class="Content"></textarea></li>
         </ul>
@@ -36,38 +39,78 @@
     </div>
     <script type="text/javascript">
         $(function () {
-            if(@Model.Count()>0)
+            var ModelCount=@Model.Count();
+            if(parseInt(ModelCount)>0)
             {
                 $(".Title").val("@Model.First().Title")
                 $(".Author").val("@Model.First().Author")
-                $(".Img").attr("src","../Content/ContentImg/@Model.First().Img")
+                $(".Img").attr("src","http://192.168.3.251:8151/Content/ContentImg/@(Model.First().Img)")
+                $(".ImgName").val("@Model.First().Img")
                 $(".Label").val("@Model.First().Label")
                 $(".Content").text("@Model.First().Content")
-                if("@Model.First().IsShow"=="True")
-                    $("#IsShowY").checked=true;
+                if("@Model.First().IsShow.ToString().ToLower()"=="true")
+                    document.getElementById("IsShowY").checked=true
                 else
-                    $("#IsShowN").checked=true;
+                    document.getElementById("IsShowN").checked=true
+
+                $(".BtnOk").click(function () {
+                    $.ajax({
+            url: "@Url.Action("EditContent", "ContentList")",
+                        type: "post",
+                        data: {
+                            id: @Model.First().Id,
+                            Title: $(".Title").val(),
+                            Img: $(".ImgName").val(),
+                            Label: $(".Label").val(),
+                            Author:$(".Author").val(),
+                            IsShow:document.getElementById("IsShowY").checked==true?1:0,
+                            Content:$(".Content").val()
+                        },
+                        success: function (result) {
+                    if (result.toLowerCase() == "true")
+                    {
+                        window.wxc.xcConfirm("修改成功", window.wxc.xcConfirm.typeEnum.success);
+                                $(".ok,.clsBtn").click(function () {
+                                    $(".BtnNo").click();
+                        })
+                            }
+                    else
+                        window.wxc.xcConfirm("修改失败", window.wxc.xcConfirm.typeEnum.error);
+                    setTimeout(function () { $(".ok").click() }, 2000)
+                        }
+            })
+                })
+            }else{
+                $(".BtnOk").click(function () {
+                    $.ajax({
+                url: "@Url.Action("EditContent", "ContentList")",
+                        type: "post",
+                        data: {
+                    Id:0,
+                            Title: $(".Title").val(),
+                            Img: $(".ImgName").val(),
+                            Label: $(".Label").val(),
+                            Author:$(".Author").val(),
+                            IsShow:document.getElementById("IsShowY").checked==true?1:0,
+                            Content:$(".Content").val()
+                        },
+                        success: function (result) {
+                        if (result.toLowerCase() == "true")
+                        {
+                            window.wxc.xcConfirm("新增成功", window.wxc.xcConfirm.typeEnum.success);
+                                $(".ok,.clsBtn").click(function () {
+                                    $(".BtnNo").click();
+                            })
+                        }
+                        else
+                            window.wxc.xcConfirm("新增失败", window.wxc.xcConfirm.typeEnum.error);
+                        setTimeout(function () { $(".ok").click() }, 2000)
+                        }
+                })
+                })
             }
 
-
-            $(".BtnOk").click(function () {
-                $.ajax({
-                    url: "@Url.Action("EditContent", "ContentList")",
-                    type: "post",
-                    data: {
-                        id: @Model.First().Id,
-                        Title: $(".Title").val(),
-                        Img: $(".Img").val(),
-                        Label: $(".Label").val(),
-                        Author:$(".Author").val(),
-                        IsShow:$("#IsShowN").checked==true?1:0
-                    },
-                    success: function (result) {
-
-                    }
-                })
-            })
-        })
+    })
     </script>
 </body>
 </html>

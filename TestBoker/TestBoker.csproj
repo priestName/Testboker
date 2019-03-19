@@ -139,6 +139,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\ContentImg\aaa.jpg" />
     <Content Include="Content\Css\Default.css" />
     <Content Include="Content\Css\Exhibition.css" />
     <Content Include="Content\Css\font-awesome-4.7.0\css\font-awesome.css" />

@@ -8,7 +8,7 @@
     @foreach (var item in Model.contentList)
     {
         <div class="ContentList" id="cl(@item.Id)">
-            <div class="img">@item.Img</div>
+            <div class="img"><img src="~/Content/ContentImg/@item.Img" /></div>
             <div class="contentMain">
                 <div class="title">@item.Title</div>
                 <p class="content">@item.Content</p>

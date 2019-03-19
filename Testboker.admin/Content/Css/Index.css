@@ -172,3 +172,15 @@ table {
     background-color:#dbdbdb;
     color:#000;
 }
+.AddContent {
+    width:50px;
+    height:24px;
+    background-color:#ececec;
+    display:inline-block;
+    text-align:center;
+    line-height:24px;
+    border-radius:4px;
+}
+.AddContent:hover{
+    background-color:#c4c4c4;
+}

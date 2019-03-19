@@ -29,6 +29,7 @@
             <label>添加时间：</label><input class="AddTime" type="text" />
             <input type="button" class="SaveBut" value="查询" />
             <input id="NotIsShow" class="NotIsShow" type="checkbox"/><label for="NotIsShow">屏蔽不展示内容</label>
+            <a class="AddContent" href="@Url.Action("ContentItem","ContentList")" title="新增文章">新增</a>
         </div>
         <div class="ContentLists">
             <table class="ContentList">
@@ -51,7 +52,7 @@
                         <td>@item.Time</td>
                         <td>@item.LastTime</td>
                         <td class="Operation" width="80px" id="@(item.Id)">
-                            <a class="IsShowOne" title="是否展示" id="@item.Id" isShow="@((!item.IsShow).ToString())"><i class='fa @Html.Encode(item.IsShow ? "fa-ban" : "fa-check-square-o")'></i></a>
+                            <a class="IsShowOne" title="@Html.Encode(item.IsShow ? "隐藏" : "展示")" id="@item.Id" isShow="@((!item.IsShow).ToString())"><i class='fa @Html.Encode(item.IsShow ? "fa-ban" : "fa-check-square-o")'></i></a>
                             <a class="Edit" href="#" title="修改"><i class="fa fa-pencil"></i></a>
                             <a class="Save hides" href="#" title="确认修改"><i class="fa fa-check"></i></a>
                             <a class="ThisMain" href="@Url.Action("ContentItem","ContentList",new {id=item.Id })" title="详情/修改"><i class="fa fa-list"></i></a>
@@ -124,13 +125,15 @@
                 $(".tr" + Rows).find("input").removeAttr("readonly").css("background-color", "#fff");
                 $("#Show" + Rows).removeAttr("disabled").css("background-color", "#fff");
                 $(this).children("i").removeClass("fa-pencil").addClass("fa-remove")
-                $(".Save").show(); $(".ThisMain").hide();
+                $(".tr" + Rows).find(".Save").show();
+                $(".tr" + Rows).find(".ThisMain").hide();
             }
             else {
                 $(".tr" + Rows).find("input").attr("readonly", "readonly").css("background-color", "#dbdbdb");
                 $("#Show" + Rows).attr("disabled", "disabled").css("background-color", "#dbdbdb");
                 $(this).children("i").removeClass("fa-remove").addClass("fa-pencil")
-                $(".Save").hide(); $(".ThisMain").show();
+                $(".tr" + Rows).find(".Save").hide();
+                $(".tr" + Rows).find(".ThisMain").show();
             }
         })
         $(".Save").click(function () {
@@ -145,7 +148,20 @@
                     Label: $(".tr" + Rows).find("Label").val()
                 },
                 success: function (result) {
-
+                    if (result.toLowerCase() == "true")
+                    {
+                        window.wxc.xcConfirm("修改成功", window.wxc.xcConfirm.typeEnum.success);
+                        $(".ok,.clsBtn").click(function () {
+                            $(".tr" + Rows).find("input").attr("readonly", "readonly").css("background-color", "#dbdbdb");
+                            $("#Show" + Rows).attr("disabled", "disabled").css("background-color", "#dbdbdb");
+                            $(".tr" + Rows).find(".Edit").children("i").removeClass("fa-remove").addClass("fa-pencil")
+                            $(".tr" + Rows).find(".Save").hide();
+                            $(".tr" + Rows).find(".ThisMain").show();
+                        });
+                    }
+                    else
+                        window.wxc.xcConfirm("修改失败", window.wxc.xcConfirm.typeEnum.error);
+                    setTimeout(function () { $(".ok").click() }, 2000)
                 }
             })
         })
@@ -158,18 +174,17 @@
                 type: "post",
                 success: function (result) {
                     var txt = isShow == "True" ? "启用文章展示" : "隐藏文章";
-                    if (result == "True")
-                        txt = "成功";
-                    else txt = "失败";
-
-                    var option = {
-                        title: txt,
-                        btn: parseInt("0001", 2),
-                        onOk: function () {
-
-                        }
+                    if (result.toLowerCase() == "true")
+                    {
+                        window.wxc.xcConfirm(txt+"成功", window.wxc.xcConfirm.typeEnum.success);
+                        $(".ok,.clsBtn").click(function () {
+                            $(".tr" + id).find(".IsShowOne").find("i").attr("title", isShow.toLowerCase() == "true" ? "展示" : "隐藏").attr("class", isShow.toLowerCase() == "true" ? "fa fa-ban" : "fa fa-check-square-o");
+                            $(".tr" + id).find(".IsShowOne").attr("isShow", isShow.toLowerCase() == "true" ? "False" : "True")
+                        })
                     }
-                    window.wxc.xcConfirm("提示", "custom", option);
+                    else
+                        window.wxc.xcConfirm(txt+"失败", window.wxc.xcConfirm.typeEnum.error);
+                    setTimeout(function () { $(".ok").click() }, 2000)
                 }
             })
         })
