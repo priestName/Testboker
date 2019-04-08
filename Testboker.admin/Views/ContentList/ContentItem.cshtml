@@ -29,6 +29,7 @@
                 <label>配&nbsp;&nbsp;&nbsp;&nbsp;图：</label><img src="" class="Img" />
                 <input type="file" id="ImgFile" style="display:none" accept ="image/*"/>
                 <input type="hidden" value="" class="ImgName" />
+
             </li>
             <li><label>标&nbsp;&nbsp;&nbsp;&nbsp;签：</label><input type="text" value="" class="Label" /><span>*多个标签用逗号(,)隔开</span></li>
             <li><label>内&nbsp;&nbsp;&nbsp;&nbsp;容：</label><textarea class="Content"></textarea></li>
@@ -42,86 +43,54 @@
         $(function () {
             $(".Title").val("@Model.First().Title")
             $(".Author").val("@Model.First().Author")
-            $(".Img").attr("src","http://192.168.3.251:8151/Content/ContentImg/@(Model.First().Img)")
+            $(".Img").attr("src","/Content/ContentImg/@(Model.First().Img)")
             $(".ImgName").val("@Model.First().Img")
             $(".Label").val("@Model.First().Label")
             $(".Content").text("@Model.First().Content")
             if("@Model.First().IsShow.ToString().ToLower()"=="true")
-                document.getElementById("IsShowY").checked=true
+        document.getElementById("IsShowY").checked=true
             else
                 document.getElementById("IsShowN").checked=true
 
-            if(@Model.First().Id>0)
-            {
-                $(".BtnOk").click(function () {
-                $.ajax({
-                    url: "@Url.Action("EditContent", "ContentList")",
-                        type: "post",
-                        data: {
-                            id: @Model.First().Id,
-                            Title: $(".Title").val(),
-                            ImgName: $(".ImgName").val(),
-                            ImgBase: $(".Img").attr("src"),
-                            Label: $(".Label").val(),
-                            Author:$(".Author").val(),
-                            IsShow:document.getElementById("IsShowY").checked==true?1:0,
-                            Content:$(".Content").val()
-                        },
-                        success: function (result) {
-                            if (result.toLowerCase() == "true")
-                            {
-                                window.wxc.xcConfirm("修改成功", window.wxc.xcConfirm.typeEnum.success);
-                                        $(".ok,.clsBtn").click(function () {
-                                            $(".BtnNo").click();
-                                })
-                            }
-                            else
-                                window.wxc.xcConfirm("修改失败", window.wxc.xcConfirm.typeEnum.error);
-                            setTimeout(function () { $(".ok").click() }, 2000)
-                        }
-                })
-            })
-            }else{
-                $(".BtnOk").click(function () {
-                $.ajax({
-                    url: "@Url.Action("EditContent", "ContentList")",
+            $(".BtnOk").click(function () {
+            $.ajax({
+            url: "@Url.Action("EditContent", "ContentList")",
                     type: "post",
                     data: {
-                            Id:0,
-                            Title: $(".Title").val(),
-                            ImgName: $(".ImgName").val(),
-                            ImgBase: $(".Img").attr("src"),
-                            Label: $(".Label").val(),
-                            Author:$(".Author").val(),
-                            IsShow:document.getElementById("IsShowY").checked==true?1:0,
-                            Content:$(".Content").val()
-                        },
+                id: @Model.First().Id,
+                        Title: $(".Title").val(),
+                        ImgName: $(".ImgName").val(),
+                        ImgBase: $(".Img").attr("src"),
+                        Label: $(".Label").val(),
+                        Author:$(".Author").val(),
+                        IsShow:document.getElementById("IsShowY").checked==true?1:0,
+                        Content:$(".Content").val()
+                    },
                     success: function (result) {
-                            if (result.toLowerCase() == "true")
-                            {
-                                window.wxc.xcConfirm("新增成功", window.wxc.xcConfirm.typeEnum.success);
-                                    $(".ok,.clsBtn").click(function () {
-                                        $(".BtnNo").click();
-                                })
-                            }
-                            else
-                                window.wxc.xcConfirm("新增失败", window.wxc.xcConfirm.typeEnum.error);
-                            setTimeout(function () { $(".ok").click() }, 2000)
+                    if (result.toLowerCase() == "true")
+                    {
+                        window.wxc.xcConfirm("修改成功", window.wxc.xcConfirm.typeEnum.success);
+                            $(".ok,.clsBtn").click(function () {
+                                $(".BtnNo").click();
+                        })
                         }
-                    })
-                })
-            }
+                    else
+                        window.wxc.xcConfirm("修改失败", window.wxc.xcConfirm.typeEnum.error);
+                    setTimeout(function () { $(".ok").click() }, 2000)
+                    }
+            })
+            })
             $(".Img").click(function(){
                 $("#ImgFile").click()
             })
             $("#ImgFile").change(function(e){
                 $(".ImgName").val(e.currentTarget.files[0].name)
                 var reader = new FileReader();
-                reader.readAsDataURL(this.files[0]);
-                reader.onload = function(e) {
+            reader.readAsDataURL(this.files[0]);
+            reader.onload = function(e) {
                     $(".Img").attr("src",this.result)
                 };
-            })
+        })
 
     })
     </script>

@@ -21,11 +21,11 @@ namespace Testboker.admin.Controllers
         {
             var a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string ContentListShow = string.IsNullOrEmpty(CookieHelper.GetCookie("ContentListShow")) ? "0" : CookieHelper.GetCookie("ContentListShow");
-            homeViewModel.ContentList = contentListBLL.GetEntitiesByPpage(pageItems, pageIndex, true, c => ContentListShow == "0" ? c.IsShow == true : true, c => c.Id);
+            homeViewModel.ContentList = contentListBLL.GetEntitiesByPpage(pageItems, pageIndex, true, c => ContentListShow == "1" ? c.IsShow == true : true, c => c.Id);
             listViewModel.PageItems = pageItems == listViewModel.PageItems ? listViewModel.PageItems : pageItems;
             listViewModel.ContentList = homeViewModel.ContentList.ToPagedList(pageIndex, listViewModel.PageItems);
             listViewModel.ContentList.PageSize = listViewModel.PageItems;
-            listViewModel.ContentList.TotalItemCount = contentListBLL.GetCount(c => ContentListShow == "0" ? c.IsShow == true : true);
+            listViewModel.ContentList.TotalItemCount = contentListBLL.GetCount(c => ContentListShow == "1" ? c.IsShow == true : true);
             listViewModel.ContentList.CurrentPageIndex = pageIndex;
             return View(listViewModel);
         }
@@ -90,10 +90,13 @@ namespace Testboker.admin.Controllers
 
         public void BaseInImg(string ImgBase, string ImgName)
         {
+            string a = Server.MapPath("~/Content/ContentImg");
             byte[] arr = Convert.FromBase64String(ImgBase);
             MemoryStream ms = new MemoryStream(arr);
             Bitmap bmp = new Bitmap(ms);
-            bmp.Save(@"E:/priestName/Testboker/TestBoker/Content/ContentImg/" + ImgName, System.Drawing.Imaging.ImageFormat.Jpeg);
+            string dbstring = Directory.GetParent(Server.MapPath("~/")).Parent.FullName + @"\TestBoker\Content\ContentImg\";
+            bmp.Save(dbstring + ImgName, System.Drawing.Imaging.ImageFormat.Jpeg);
+            bmp.Save(Server.MapPath("~/Content/ContentImg/") + ImgName, System.Drawing.Imaging.ImageFormat.Jpeg);
             ms.Close();
 
         }

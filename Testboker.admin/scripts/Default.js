@@ -1,13 +1,11 @@
 ﻿$(function () {
     $(".left").mouseenter(function () {
-        $(".left").animate({ width: "120px" }, 500);
-        $(".Content ").width("calc(100% - 120px)")
+        $(".left").stop(true, false).animate({ width: "120px" }, 500);
+        $(".Content").stop(true, false).animate({ width: ($(window).width() - 120) + "px" }, 400);
     })
     $(".left").mouseleave(function () {
-        $(".left").animate({ width: "41px" }, 500);
-        setTimeout(function () {
-            $(".Content ").width("calc(100% - 41px)")
-        }, 500)
+        $(".left").stop(true, false).animate({ width: "41px" }, 500);
+        $(".Content").stop(true, false).animate({ width: ($(window).width() - 41) + "px" }, 600);
     })
     $(".Nav a").click(function () {
         $(".Default").attr("src", $(this).attr("Url"))
