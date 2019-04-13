@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using Testboker.IDAL;
@@ -65,5 +67,10 @@ namespace Testboker.DAL
         {
             return _dbContext.Database.ExecuteSqlCommand(SqlText);
         }
+        public IEnumerable<TEntity> QueryBySqlData(string SqlText, params object[] parameters)
+        {
+            return _dbContext.Database.SqlQuery<TEntity>(SqlText, parameters).AsQueryable<TEntity>().ToList();
+        }
+        
     }
 }

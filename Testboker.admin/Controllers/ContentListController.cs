@@ -8,6 +8,11 @@ using Testboker.Model;
 using System.Linq;
 using System.Drawing;
 using System.IO;
+using System.Web.Script.Serialization;
+using System.Collections.Generic;
+using System.Data.Entity.SqlServer;
+using System.Data.SqlClient;
+using System.Linq.Expressions;
 
 namespace Testboker.admin.Controllers
 {
@@ -17,15 +22,15 @@ namespace Testboker.admin.Controllers
         public ContentListIBLL contentListBLL { get; set; }
         static HomeViewModel homeViewModel = new HomeViewModel();
         ListViewModel listViewModel = new ListViewModel();
-        public ActionResult Index(int pageIndex = 1, int pageItems = 25)
-        {
-            var a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            string ContentListShow = string.IsNullOrEmpty(CookieHelper.GetCookie("ContentListShow")) ? "0" : CookieHelper.GetCookie("ContentListShow");
-            homeViewModel.ContentList = contentListBLL.GetEntitiesByPpage(pageItems, pageIndex, true, c => ContentListShow == "1" ? c.IsShow == true : true, c => c.Id);
+        public ActionResult Index(int pageIndex = 1, int pageItems = 25,string where= "{\"Author\":\"P\"}")
+         {
+            bool ContentListShow = CookieHelper.GetCookie("ContentListShow") == "1";
+            Model.ContentListWhere ContentList = new JavaScriptSerializer().Deserialize<ContentListWhere>(where);
+            Lambdas(ContentList);
             listViewModel.PageItems = pageItems == listViewModel.PageItems ? listViewModel.PageItems : pageItems;
-            listViewModel.ContentList = homeViewModel.ContentList.ToPagedList(pageIndex, listViewModel.PageItems);
+            listViewModel.ContentList = homeViewModel.ContentList==null?null:homeViewModel.ContentList.ToPagedList(pageIndex, listViewModel.PageItems);
             listViewModel.ContentList.PageSize = listViewModel.PageItems;
-            listViewModel.ContentList.TotalItemCount = contentListBLL.GetCount(c => ContentListShow == "1" ? c.IsShow == true : true);
+            listViewModel.ContentList.TotalItemCount = contentListBLL.GetCount(c => ContentListShow ? c.IsShow == true : true);
             listViewModel.ContentList.CurrentPageIndex = pageIndex;
             return View(listViewModel);
         }
@@ -56,7 +61,7 @@ namespace Testboker.admin.Controllers
                 ImgBase = ImgBase.Substring(ImgBase.IndexOf("base64,")+7);
                 if (ContentList == null)
                     BaseInImg(ImgBase, Request["ImgName"].ToString());
-                else if (ImgBase != ContentList.Img)
+                else if (Request["ImgName"].ToString() != ContentList.Img)
                     BaseInImg(ImgBase, Request["ImgName"].ToString());
             }
 
@@ -68,7 +73,7 @@ namespace Testboker.admin.Controllers
                 ContentList.Content = string.IsNullOrEmpty(Request["Content"]) ? ContentList.Content : Request["Content"].ToString();
                 ContentList.IsShow = string.IsNullOrEmpty(Request["isShow"]) ? ContentList.IsShow : Request["isShow"].ToString() == "True";
                 ContentList.Author = string.IsNullOrEmpty(Request["Author"]) ? ContentList.Content : Request["Author"].ToString();
-                ContentList.LastTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                ContentList.LastTime = DateTime.Now;
                 IsShowEdit = contentListBLL.Modify(ContentList);
             }
             else
@@ -87,10 +92,8 @@ namespace Testboker.admin.Controllers
             }
             Response.Write(IsShowEdit.ToString());
         }
-
         public void BaseInImg(string ImgBase, string ImgName)
         {
-            string a = Server.MapPath("~/Content/ContentImg");
             byte[] arr = Convert.FromBase64String(ImgBase);
             MemoryStream ms = new MemoryStream(arr);
             Bitmap bmp = new Bitmap(ms);
@@ -98,6 +101,38 @@ namespace Testboker.admin.Controllers
             bmp.Save(dbstring + ImgName, System.Drawing.Imaging.ImageFormat.Jpeg);
             bmp.Save(Server.MapPath("~/Content/ContentImg/") + ImgName, System.Drawing.Imaging.ImageFormat.Jpeg);
             ms.Close();
+
+        }
+        public IEnumerable<ContentList> SetTable(ContentListWhere Models)
+        {
+            string where = " where 1=1";
+            where = string.IsNullOrEmpty(Models.Author) ? "" : " and Author like '%'+@Author+'%'";
+            where = string.IsNullOrEmpty(Models.Content) ? "" : " and Content like '%'+@Content+'%'";
+            where = string.IsNullOrEmpty(Models.Label) ? "" : " and Label like '%'+@Label+'%'";
+            where = string.IsNullOrEmpty(Models.Title) ? "" : " and Title like '%'+@Title+'%'";
+            where = string.IsNullOrEmpty(Models.Time1) ? "" : " and Time >= cast(@Time1 as datetime)";
+            where = string.IsNullOrEmpty(Models.Time2) ? "" : " and Time <= cast(@Time2 as datetime)";
+            where = string.IsNullOrEmpty(Models.LastTime1) ? "" : " and LastTime >= cast(@LastTime1 as datetime)";
+            where = string.IsNullOrEmpty(Models.LastTime2) ? "" : " and LastTime <= cast(@LastTime2 as datetime)";
+            string sqlText = "select * from ContentList";
+            SqlParameter[] parameters = { new SqlParameter("@Author", Models.Author) };
+            return contentListBLL.QueryBySqlData(sqlText, parameters);
+        }
+        public void Lambdas(ContentListWhere Where)
+        {
+            Expression<Func<Model.ContentList, bool>> exp = c => true;
+            if (!string.IsNullOrEmpty(Where.Author))
+                exp = exp.And(c => c.Author.Contains("P"));
+            if (!string.IsNullOrEmpty(Where.Content))
+                exp = exp.And(c => c.Author.Contains("P"));
+            if (!string.IsNullOrEmpty(Where.Title))
+                exp = exp.And(c => c.Author.Contains("P"));
+            if (!string.IsNullOrEmpty(Where.Label))
+                exp = exp.And(c => c.Author.Contains("P"));
+            if (Where.IsShow)
+                exp = exp.And(c => c.Author.Contains("P"));
+            if (!string.IsNullOrEmpty(Where.LastTime1))
+                exp = exp.And(c => c.Author.Contains("P"));
 
         }
     }

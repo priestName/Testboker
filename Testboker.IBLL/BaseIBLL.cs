@@ -60,5 +60,12 @@ namespace Testboker.IBLL
         /// <returns></returns>
         IEnumerable<TEntity> GetEntitiesByPpage<TType>(int pageSize, int pageIndex, bool isAsc,
             Expression<Func<TEntity, bool>> whereLamebda, Expression<Func<TEntity, TType>> orderByLamebda);
+        /// <summary>
+        /// sql语句查询返回
+        /// </summary>
+        /// <param name="SqlText">sql语句</param>
+        /// <param name="parameters">参数数组</param>
+        /// <returns></returns>
+        IEnumerable<TEntity> QueryBySqlData(string SqlText, params object[] parameters);
     }
 }

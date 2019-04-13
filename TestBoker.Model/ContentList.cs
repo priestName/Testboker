@@ -27,9 +27,22 @@ namespace Testboker.Model
         public string Label { get; set; }
 
         public DateTime Time { get; set; }
-        public string LastTime { get; set; }
+        public DateTime? LastTime { get; set; }
         [Required]
         [StringLength(50)]
         public string Author { get; set; }
+    }
+
+    public partial class ContentListWhere
+    {
+        public string Title = string.Empty;
+        public string Content = string.Empty;
+        public bool IsShow = true;
+        public string Label = string.Empty;
+        public string Time1 = string.Empty;
+        public string Time2 = string.Empty;
+        public string LastTime1 = string.Empty;
+        public string LastTime2 = string.Empty;
+        public string Author = string.Empty;
     }
 }

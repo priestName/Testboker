@@ -1,0 +1,113 @@
+﻿@model Testboker.admin.Models.ListViewModel
+@using Webdiyer.WebControls.Mvc;
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>VisitList</title>
+    <link rel="stylesheet" href="~/Content/Css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/Css/Index.css" rel="stylesheet" />
+    <script src="~/scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/scripts/Default.js"></script>
+    <script src="~/scripts/xcConfirm/xcConfirm.js"></script>
+    <link href="~/scripts/xcConfirm/Css/xcConfirm.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="Main">
+        <div class="Select">
+            <select class="SelectType">
+                <option value="0">全部</option>
+                <option value="1">ip</option>
+                <option value="2">浏览器</option>
+            </select>
+            <input class="ItemMain" type="text" />
+            <label>访问时间：</label><input class="AddTime" type="text" />
+            <input type="button" class="SaveBut" value="查询" />
+            <a class="AddContent" href="@Url.Action("LoginLogItem","VisitMainList")" title="新增文章">新增</a>
+        </div>
+        <div class="LoginLogLists">
+            <table class="LoginLogList">
+                <tr class="TableTiTle">
+                    <td>序号</td>
+                    <td>IP</td>
+                    <td>机器名称</td>
+                    <td>访问时间</td>
+                    <td>浏览器信息</td>
+                    <td>操作</td>
+                </tr>
+                @foreach (var item in Model.LoginLog)
+                {
+                    <tr class="tr@(item.Id)">
+                        <td>@(Model.LoginLog.IndexOf(item) + (Model.LoginLog.CurrentPageIndex - 1) * Model.LoginLog.PageSize + 1)</td>
+                        <td><input type="text" readonly="readonly" class="Name" value="@item.IP" /></td>
+                        <td><input type="text" readonly="readonly" class="Name" value="@item.Name" /></td>
+                        <td><input type="text" readonly="readonly" class="Time" value="@item.Time" /></td>
+                        <td><input type="text" readonly="readonly" class="Chrome" title="@item.Chrome" value="@item.Chrome" /></td>
+                        <td class="Operation" width="80px" id="@(item.Id)">
+                            <a class="ThisMain" href="@Url.Action("LoginLogItem","VisitMainList",new {id=item.Id })" title="详情"><i class="fa fa-list"></i></a>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="Foot">
+            <span class="Page">当前第@(Model.LoginLog.CurrentPageIndex)页/共@(Model.LoginLog.TotalItemCount / Model.LoginLog.PageSize)页</span>
+            <span>每页&nbsp;<input type="text" class="PageItems" readonly="readonly" value="@Model.PageItems" />行&nbsp;/共@(Model.LoginLog.TotalItemCount)条记录</span>
+            @Html.Pager(Model.LoginLog, new PagerOptions
+               {
+                   NumericPagerItemCount = 5,
+                   PageIndexParameterName = "pageIndex",//控制器参数
+                   ContainerTagName = "span",//分页容器形式（默认好像是div）
+                   CssClass = "NumPager",//容器css class
+                   ShowMorePagerItems = false,//“更多”按钮不显示
+                   CurrentPagerItemTemplate = "<span class=\"current\">{0}</span>",//当前按钮 模版
+                   DisabledPagerItemTemplate = "<span class=\"disable\">{0}</span>",//不可用按钮 模版
+                   PagerItemTemplate = "<span class=\"able\">{0}</span>",//可用按钮 模版
+                   FirstPageText = "首页",
+                   PrevPageText = "上一页",
+                   NextPageText = "下一页",
+                   LastPageText = "末页",
+                   PageIndexBoxId = "pagebox",
+                   GoToButtonId = "goBtn"
+               })
+            <span class="IsPageGo"><input type="text" class="IsPage" /><input type="button" value="GO" class="PageGo" /></span>
+        </div>
+    </div>
+    <style type="text/css">
+        .Display {
+            pointer-events: none;
+        }
+        .Chrome {
+        text-overflow:ellipsis;
+        }
+    </style>
+    <script type="text/javascript">
+    $(function () {
+        $(".SaveBut").click(function () {
+            location.href="@Url.Action("VisitList", "VisitMainList")"
+        })
+        $(".PageGo").click(function () {
+            location.href = "@Url.Action("VisitList", "VisitMainList")?pageIndex=" + $(".IsPage").val();
+        })
+        var IsPageItems = 0;
+        $(".PageItems").click(function () {
+            IsPageItems = $(".PageItems").val();
+            $(this).removeAttr("readonly")
+        })
+        $(".PageItems").blur(function () {
+            if (IsPageItems != $(".PageItems").val())
+            {
+                location.href = "@Url.Action("VisitList", "VisitMainList")?pageItems=" + $(".PageItems").val();
+            }
+            $(this).attr("readonly", "readonly")
+        })
+    })
+    </script>
+</body>
+</html>

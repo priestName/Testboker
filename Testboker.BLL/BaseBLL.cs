@@ -54,5 +54,9 @@ namespace Testboker.BLL
         {
             return _baseDLL.QueryBySql(SqlText);
         }
+        public IEnumerable<TEntity> QueryBySqlData(string SqlText, params object[] parameters)
+        {
+            return _baseDLL.QueryBySqlData(SqlText, parameters);
+        }
     }
 }

@@ -161,6 +161,8 @@
     <Content Include="Content\emoji\js\emoji-picker.js" />
     <Content Include="Content\emoji\js\jquery.emojiarea.js" />
     <Content Include="Content\emoji\js\util.js" />
+    <Content Include="scripts\jQueryTime\calendar.min.js" />
+    <Content Include="scripts\jQueryTime\images\date_bg.png" />
     <Content Include="scripts\xcConfirm\img\icons.png" />
     <Content Include="Content\Css\images\ui-icons_444444_256x240.png" />
     <Content Include="Content\Css\images\ui-icons_555555_256x240.png" />
@@ -248,6 +250,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\CookieHelper.cs" />
+    <Compile Include="Helper\LambdasHelper.cs" />
     <Compile Include="Models\ContentListViewModel.cs" />
     <Compile Include="Models\ExhibitionViewModel.cs" />
     <Compile Include="Models\HomeViewModel.cs" />
@@ -266,6 +269,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\ContentList\Index.cshtml" />
     <Content Include="Views\ContentList\ContentItem.cshtml" />
+    <Content Include="Views\VisitMainList\VisitList.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -278,7 +282,6 @@
     <Folder Include="Content\ContentImg\" />
     <Folder Include="Content\Image\" />
     <Folder Include="Views\Exhibition\" />
-    <Folder Include="Views\VisitMainList\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Testboker.IBLL\Testboker.IBLL.csproj">
@@ -292,6 +295,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="scripts\jQueryTime\Css\calendar.css" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

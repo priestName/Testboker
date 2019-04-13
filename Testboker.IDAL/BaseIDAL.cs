@@ -16,5 +16,6 @@ namespace Testboker.IDAL
         int QueryBySql(string SqlText);
         IEnumerable<TEntity> GetEntitiesByuPage<TType>(int pageSize, int pageIndex, bool isAsc,
         Expression<Func<TEntity, bool>> whereLamebda, Expression<Func<TEntity, TType>> orderByLamebda);
+        IEnumerable<TEntity> QueryBySqlData(string SqlText, params object[] parameters);
     }
 }

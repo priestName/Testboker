@@ -15,26 +15,31 @@
     <script src="~/scripts/Default.js"></script>
     <script src="~/scripts/xcConfirm/xcConfirm.js"></script>
     <link href="~/scripts/xcConfirm/Css/xcConfirm.css" rel="stylesheet" />
+    <link href="~/scripts/jQueryTime/Css/calendar.css" rel="stylesheet"  type="text/css"/>
+    <script src="~/scripts/jQueryTime/calendar.min.js" type="text/javascript"></script>
+
 </head>
 <body>
     <div class="Main">
         <div class="Select">
-            <select class="SelectType">
-                <option value="0">全部</option>
-                <option value="1">标题</option>
-                <option value="2">内容</option>
-                <option value="3">标签</option>
-            </select>
-            <input class="ItemMain" type="text" />
-            <label>添加时间：</label><input class="AddTime" type="text" />
+            <label>标题：</label><input class="ItemTitle" type="text" />
+            <label>内容：</label><input class="ItemMain" type="text" />
+            <label>标签：</label><input class="ItemLabel" type="text" />
+            <label>作者：</label><input class="ItemAuthor" type="text" />
             <input type="button" class="SaveBut" value="查询" />
-            <input id="NotIsShow" class="NotIsShow" type="checkbox"/><label for="NotIsShow">屏蔽不展示内容</label>
-            <a class="AddContent" href="@Url.Action("ContentItem","ContentList")" title="新增文章">新增</a>
+            <input id="NotIsShow" class="NotIsShow" type="checkbox" /><label for="NotIsShow">屏蔽不展示内容</label>
+            <a class="AddContent" href="@Url.Action("ContentItem","ContentList")" title="新增文章">新增</a><br />
+
+            <label>添加时间：</label><input class="AddTime1" id="AddTime1" type="text" />-<input class="AddTime2" id="AddTime2" type="text" />
+            <label>最后修改时间：</label><input class="LastTime1" id="LastTime1" type="text" />-<input class="LastTime2" id="LastTime2" type="text" />
+            
+            
         </div>
         <div class="ContentLists">
             <table class="ContentList">
                 <tr class="TableTiTle">
-                    <td>ID</td>
+                    <td>序号</td>
+                    <td>作者</td>
                     <td>标题</td>
                     <td>图片</td>
                     <td>标签</td>
@@ -46,6 +51,7 @@
                 {
                     <tr class="tr@(item.Id)">
                         <td>@(Model.ContentList.IndexOf(item) + (Model.ContentList.CurrentPageIndex - 1) * Model.ContentList.PageSize+1)</td>
+                        <td><input type="text" readonly="readonly" class="Author" value="@item.Author" /></td>
                         <td><input type="text" readonly="readonly" class="Title" value="@item.Title"/></td>
                         <td><input type="text" readonly="readonly" class="Img" value="@item.Img" /></td>
                         <td><input type="text" readonly="readonly" class="Label" value="@item.Label" /></td>
@@ -92,6 +98,14 @@
 
 <script type="text/javascript">
     $(function () {
+        $(".AddTime1,.AddTime2,.LastTime1,.LastTime2").focus(function () {
+            if ($("#" + $(this).attr("id") + "Calendar").length == 0) {
+                $(this).calendar({
+                    upperLimit: new Date(),
+                    lowerLimit: new Date("2011/01/01")
+                });
+            }
+        })
         if (Cookie.get("ContentListShow") == 1)
             $("#NotIsShow").attr("checked", "checked")
         else
@@ -100,7 +114,17 @@
             Cookie.set("ContentListShow", $("#NotIsShow").prop("checked") ? "1" : "0", "")
         })
         $(".SaveBut").click(function () {
-            location.href="@Url.Action("Index", "ContentList")"
+            var where = ""; 
+            $(".ItemTitle").val() == "" ? where += "":where += "\"Title\":\"" + $(".ItemTitle").val() + "\","
+            $(".ItemMain").val() == "" ? where += "" : where += "\"Content\":\"" + $(".ItemMain").val() + "\","
+            $(".ItemLabel").val() == "" ? where += "" : where += "\"Label\":\"" + $(".ItemLabel").val() + "\","
+            $(".ItemAuthor").val() == "" ? where += "" : where += "\"Author\":\"" + $(".ItemAuthor").val() + "\","
+            $(".LastTime1").val() == "" ? where += "" : where += "\"LastTime1\":\"" + $(".LastTime1").val() + "\","
+            $(".LastTime2").val() == "" ? where += "" : where += "\"LastTime2\":\"" + $(".LastTime2").val() + "\","
+            $(".AddTime1").val() == "" ? where += "" : where += "\"Time1\":\"" + $(".AddTime1").val() + "\","
+            $(".AddTime2").val() == "" ? where += "" : where += "\"Time2\":\"" + $(".AddTime2").val() + "\","
+            where = where == "" ? "" : "{" + where.substring(0, where.length - 1) + "}"
+            location.href = "@Url.Action("Index", "ContentList")?where="+ where;
         })
         $(".PageGo").click(function () {
             location.href = "@Url.Action("Index", "ContentList")?pageIndex=" + $(".IsPage").val();
