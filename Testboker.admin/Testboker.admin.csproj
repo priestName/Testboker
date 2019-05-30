@@ -94,6 +94,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -242,6 +244,7 @@
   <ItemGroup>
     <Compile Include="App_Start\AutofacConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BannerController.cs" />
     <Compile Include="Controllers\ContentListController.cs" />
     <Compile Include="Controllers\ExhibitionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -281,6 +284,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Content\ContentImg\" />
     <Folder Include="Content\Image\" />
+    <Folder Include="Views\Banner\" />
     <Folder Include="Views\Exhibition\" />
   </ItemGroup>
   <ItemGroup>
@@ -295,6 +299,7 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="scripts\jQueryTime\Css\calendar.css" />

@@ -10,9 +10,9 @@ namespace Testboker.IDAL
         void Delete(TEntity TEntity);
         void Update(TEntity TEntity);
         bool SaveChanges();
-        int QueryCount(Func<TEntity, bool> whereLamebda);
-        TEntity QueryEntity(Func<TEntity, bool> whereLamebda);
-        IEnumerable<TEntity> QueryEntities(Func<TEntity, bool> whereLamebda);
+        int QueryCount(Expression<Func<TEntity, bool>> whereLamebda);
+        TEntity QueryEntity(Expression<Func<TEntity, bool>> whereLamebda);
+        IEnumerable<TEntity> QueryEntities(Expression<Func<TEntity, bool>> whereLamebda);
         int QueryBySql(string SqlText);
         IEnumerable<TEntity> GetEntitiesByuPage<TType>(int pageSize, int pageIndex, bool isAsc,
         Expression<Func<TEntity, bool>> whereLamebda, Expression<Func<TEntity, TType>> orderByLamebda);

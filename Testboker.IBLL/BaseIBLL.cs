@@ -29,19 +29,19 @@ namespace Testboker.IBLL
         /// </summary>
         /// <param name="whereLamebda">条件n => true(查全部) n => n.?=?</param>
         /// <returns></returns>
-        int GetCount(Func<TEntity, bool> whereLamebda);
+        int GetCount(Expression<Func<TEntity, bool>> whereLamebda);
         /// <summary>
         /// 查询(Model)
         /// </summary>
         /// <param name="whereLamebda">条件n => true(查全部) n => n.?=?</param>
         /// <returns></returns>
-        TEntity GetEntity(Func<TEntity, bool> whereLamebda);
+        TEntity GetEntity(Expression<Func<TEntity, bool>> whereLamebda);
         /// <summary>
         /// 查询(IEnumerable<Model>)
         /// </summary>
         /// <param name="whereLamebda">条件n => true(查全部) n => n.?=?</param>
         /// <returns></returns>
-        IEnumerable<TEntity> GetEntities(Func<TEntity, bool> whereLamebda);
+        IEnumerable<TEntity> GetEntities(Expression<Func<TEntity, bool>> whereLamebda);
         /// <summary>
         /// 执行Sql语句
         /// </summary>

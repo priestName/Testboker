@@ -1,36 +1,171 @@
-﻿@model TestBoker.Models.HomeViewModel
+﻿
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/_LayoutDefault.cshtml";
 }
+
 <link href="~/Content/Css/Index.css" rel="stylesheet" />
-<div class="Search">
-    <div class="SearchBox">
-        <div class="SearchBut"><i class="fa fa-search"></i></div>
-        <div class="SearchType"><input type="text" /></div>
+
+<form id="searchForm" class="Search" action="#" onsubmit="">
+    <div class="mui-input-row mui-search">
+        <input type="search" class="SearchText mui-input-clear" placeholder="请输入关键字">
+    </div>
+</form>
+<div class="ContentMain" id="ContentMain">
+    <div id="Contentpull" class="mui-content mui-scroll-wrapper">
+        <div class="mui-scroll">
+            <ul class="mui-table-view"></ul>
+        </div>
     </div>
 </div>
-<div class="ContentMain">
-    @foreach (var item in Model.contentList)
-    {
-        <div class="ContentList" id="cl(@item.Id)">
-            <div class="img">@item.Img</div>
-            <div class="contentMain">
-                <div class="title">@item.Title</div>
-                <p class="content">@item.Content</p>
-            </div>
-        </div>
-    }
-    @section style
-{
-        <style>
-            .top {
-                height: 93%;
-            }
+<input type="hidden" value="1" id="PageIndex" />
 
-            .ContentMain {
-                height: 94%;
+<script id="page-tmpl" type="text/x-jquery-tmpl">
+    <li class="mui-table-view-cell mui-media ContentList" id="cl_${Id}">
+        <a href="javascript:;">
+            <img class="mui-media-object mui-pull-left" src="/Content/ContentImg/${Img}">
+            <div class="mui-media-body">
+                ${Title}
+                <p class='mui-ellipsis-2'>${Content}</p>
+            </div>
+        </a>
+    </li>
+</script>
+@section Style{
+    <style>
+        .Search {
+            position: absolute;
+            z-index: 900;
+            top: 0;
+            left: 0;
+        }
+
+        .top {
+            height: 93%;
+        }
+
+        .ContentMain {
+            height: 95%;
+            width: 100%;
+            margin-top: 37px;
+        }
+
+        .mui-content {
+            top: 37px;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .LoadHint2 {
+            width: 100%;
+            text-align: center;
+            padding-top: 10px;
+        }
+
+        .LoadHint1 {
+            width: 100%;
+            text-align: center;
+            padding-top: 10px;
+            background-color: #fff;
+            opacity: 0.4;
+            position: absolute;
+            z-index: 9;
+            top: 0px;
+            left: 0;
+            text-align: center;
+            color: #000;
+            font-weight: 500;
+        }
+
+        .mui-search > .SearchText {
+            background-color: #fff;
+            height: 100%;
+        }
+
+        .mui-search > .mui-placeholder {
+            height: 100%
+        }
+
+            .mui-search > .mui-placeholder > .mui-icon-search {
+                height: 100%;
+                line-height: 2;
             }
-        </style>
-    }
-</div>
+    </style>
+}
+@section Script{
+    <script>
+        var s = 1; i = 0;
+        mui.init({
+            pullRefresh: {
+                container: '#Contentpull',
+                down: {
+                    style: 'circle',
+                    callback: pulldownRefresh
+                },
+                up: {
+                    auto: true,
+                    contentrefresh: '正在加载...',
+                    callback: pullupRefresh
+                }
+            }
+        });
+
+        $(function () {
+            $('#searchForm').bind('search', function () {
+                $("#PageIndex").val(1)
+                if ($(".SearchText").val() == "")
+                    i = 0;
+                else
+                    i = 1;
+                $("#ContentMain ul li").remove();
+                $(".mui-scroll").css("transform", "translate3d(0px, 0px, 0px) translateZ(0px)");
+                $(".mui-scroll").css("transform", "translate3d(0px, 0px, 0px) translateZ(0px)").css("transition-duration", "0ms").css("transition-timing-function", "cubic-bezier(0.165, 0.84, 0.44, 1)");
+                dateList()
+                document.activeElement.blur();
+            })
+        })
+        function pulldownRefresh() {
+            setTimeout(function () {
+                $("#PageIndex").val(1);
+                $(".SearchText").val("");
+                i = 0;
+                dateList();
+                mui('#Contentpull').pullRefresh().endPulldownToRefresh();
+                mui.toast("刷新成功");
+            }, 1500);
+        }
+        function pullupRefresh() {
+            setTimeout(function () {
+                mui('#Contentpull').pullRefresh().endPullupToRefresh((s != 1 )); //参数为true代表没有更多数据了。
+                dateList();
+            }, 1500);
+        }
+        function dateList()
+        {
+            var PageIndex = parseInt($("#PageIndex").val());
+            var SearchText = i == 1 ? $(".SearchText").val() : "";
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("contentList", "ContentList")",
+                data: { pageIndex: PageIndex, searchText: SearchText },
+                dataType: "json",
+                success: function (result) {
+                    if (result != "") {
+                        if (PageIndex == 1) {
+                            $("#ContentMain ul li").remove();
+                            $("#ContentMain ul").append($("#page-tmpl").tmpl(eval(result)))
+                        }
+                        else
+                            $("#ContentMain ul").append($("#page-tmpl").tmpl(eval(result)))
+                        $("#PageIndex").val(PageIndex + 1)
+                        s = 1
+                    }
+                    if (result.length==10)
+                        s = 1
+                }
+            })
+        }
+    </script>
+}

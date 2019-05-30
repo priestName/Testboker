@@ -3,10 +3,14 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <script src="~/scripts/jquery-3.3.1.min.js"></script>
-    <link rel="stylesheet" href="~/Content/Css/font-awesome-4.7.0/css/font-awesome.min.css">
-    <link href="~/Content/Css/Default.css" rel="stylesheet" />
-    <script src="~/scripts/Default.js"></script>
+    <link type="text/css" rel="stylesheet" href="~/Content/Css/mui.min.css" />
+    <link type="text/css" rel="stylesheet" href="~/Content/Css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="~/Content/Css/jquery-ui.min.css" />
+    <link type="text/css" rel="stylesheet" href="~/Content/Css/Default.css" />
+    <script src="~/scripts/mui.min.js"></script>
+    <script type="text/javascript" src="~/scripts/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="~/scripts/jquery.tmpl.min.js"></script>
+    <script type="text/javascript" src="~/scripts/Default.js"></script>
     @RenderSection("style", false)
 </head>
 <body>
@@ -14,10 +18,13 @@
         @RenderBody()
     </div>
     <div class="nav">
-        <div><a href="@Url.Action("index", "Home")"><i class="fa fa-home fa-2x"></i></a></div>
-        <div><a href="@Url.Action("index", "ContentList")"><i class="fa fa-list fa-2x"></i></a></div>
-        <div><a href="@Url.Action("index", "Exhibition")"><i class="fa fa-window-restore fa-2x"></i></a></div>
+        <div><a href="@Url.Action("Index","Home")"><i class="fa fa-home fa-2x"></i></a></div>
+        <div><a href="@Url.Action("Index","ContentList")"><i class="fa fa-list fa-2x"></i></a></div>
+        <div><a href="@Url.Action("Index","Exhibition")"><i class="fa fa-window-restore fa-2x"></i></a></div>
     </div>
+    <script>
+        $(".nav div").css("line-height", ($(".nav").height() + 15) + "px")
+    </script>
     @RenderSection("Script", false)
 </body>
 </html>

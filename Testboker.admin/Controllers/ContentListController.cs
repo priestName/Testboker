@@ -5,14 +5,11 @@ using Testboker.admin.Models;
 using Testboker.admin.Helper;
 using Webdiyer.WebControls.Mvc;
 using Testboker.Model;
-using System.Linq;
 using System.Drawing;
 using System.IO;
 using System.Web.Script.Serialization;
-using System.Collections.Generic;
-using System.Data.Entity.SqlServer;
-using System.Data.SqlClient;
 using System.Linq.Expressions;
+using System.Linq;
 
 namespace Testboker.admin.Controllers
 {
@@ -22,15 +19,15 @@ namespace Testboker.admin.Controllers
         public ContentListIBLL contentListBLL { get; set; }
         static HomeViewModel homeViewModel = new HomeViewModel();
         ListViewModel listViewModel = new ListViewModel();
-        public ActionResult Index(int pageIndex = 1, int pageItems = 25,string where= "{\"Author\":\"P\"}")
-         {
-            bool ContentListShow = CookieHelper.GetCookie("ContentListShow") == "1";
-            Model.ContentListWhere ContentList = new JavaScriptSerializer().Deserialize<ContentListWhere>(where);
-            Lambdas(ContentList);
+        public ActionResult Index(int pageIndex = 1, int pageItems = 25,string where= "")
+        {
+            ContentListWhere ModelWhere= new JavaScriptSerializer().Deserialize<ContentListWhere>(where);
+            homeViewModel.ContentList = contentListBLL.GetEntitiesByPpage(pageItems, pageIndex, true, Lambdas(ModelWhere), c => c.Id);
+
             listViewModel.PageItems = pageItems == listViewModel.PageItems ? listViewModel.PageItems : pageItems;
             listViewModel.ContentList = homeViewModel.ContentList==null?null:homeViewModel.ContentList.ToPagedList(pageIndex, listViewModel.PageItems);
             listViewModel.ContentList.PageSize = listViewModel.PageItems;
-            listViewModel.ContentList.TotalItemCount = contentListBLL.GetCount(c => ContentListShow ? c.IsShow == true : true);
+            listViewModel.ContentList.TotalItemCount = contentListBLL.GetCount(Lambdas(ModelWhere));
             listViewModel.ContentList.CurrentPageIndex = pageIndex;
             return View(listViewModel);
         }
@@ -45,7 +42,8 @@ namespace Testboker.admin.Controllers
         }
         public void ListShow()
         {
-            Model.ContentList ContentList = contentListBLL.GetEntity(c => c.Id == Convert.ToInt32(Request["id"]));
+            int id = Convert.ToInt32(Request["id"]);
+            Model.ContentList ContentList = contentListBLL.GetEntity(c => c.Id == id);
             ContentList.IsShow = Request["isShow"].ToString() == "True";
             bool IsShowEdit = contentListBLL.Modify(ContentList);
             Response.Write(IsShowEdit.ToString());
@@ -53,8 +51,9 @@ namespace Testboker.admin.Controllers
         public void EditContent()
         {
             bool IsShowEdit = false;
+            int id = Convert.ToInt32(Request["id"]);
             Model.ContentList ContentList = new Model.ContentList();
-            ContentList = contentListBLL.GetEntity(c => c.Id == Convert.ToInt32(Request["id"]));
+            ContentList = contentListBLL.GetEntity(c => c.Id == id);
             if (!string.IsNullOrEmpty(Request["ImgBase"]))
             {
                 string ImgBase = Request["ImgBase"].ToString();
@@ -65,14 +64,14 @@ namespace Testboker.admin.Controllers
                     BaseInImg(ImgBase, Request["ImgName"].ToString());
             }
 
-            if (Convert.ToInt32(Request["id"]) != 0)
+            if (ContentList !=null)
             {
-                ContentList.Img = string.IsNullOrEmpty(Request["ImgName"]) ? ContentList.Img : Request["ImgName"].ToString();
-                ContentList.Label = string.IsNullOrEmpty(Request["Label"]) ? ContentList.Label : Request["Label"].ToString();
-                ContentList.Title = string.IsNullOrEmpty(Request["Title"]) ? ContentList.Title : Request["Title"].ToString();
-                ContentList.Content = string.IsNullOrEmpty(Request["Content"]) ? ContentList.Content : Request["Content"].ToString();
-                ContentList.IsShow = string.IsNullOrEmpty(Request["isShow"]) ? ContentList.IsShow : Request["isShow"].ToString() == "True";
-                ContentList.Author = string.IsNullOrEmpty(Request["Author"]) ? ContentList.Content : Request["Author"].ToString();
+                ContentList.Img = string.IsNullOrEmpty(Request.Form["ImgName"]) ? ContentList.Img : Request["ImgName"].ToString();
+                ContentList.Label = string.IsNullOrEmpty(Request.Form["Label"]) ? ContentList.Label : Request["Label"].ToString();
+                ContentList.Title = string.IsNullOrEmpty(Request.Form["Title"]) ? ContentList.Title : Request["Title"].ToString();
+                ContentList.Content = string.IsNullOrEmpty(Request.Form["Content"]) ? ContentList.Content : Request["Content"].ToString();
+                ContentList.IsShow = string.IsNullOrEmpty(Request.Form["isShow"]) ? ContentList.IsShow : Request["isShow"].ToString() == "True";
+                ContentList.Author = string.IsNullOrEmpty(Request.Form["Author"]) ? ContentList.Author : Request["Author"].ToString();
                 ContentList.LastTime = DateTime.Now;
                 IsShowEdit = contentListBLL.Modify(ContentList);
             }
@@ -103,37 +102,29 @@ namespace Testboker.admin.Controllers
             ms.Close();
 
         }
-        public IEnumerable<ContentList> SetTable(ContentListWhere Models)
+        public Expression<Func<ContentList, bool>> Lambdas(ContentListWhere Where)
         {
-            string where = " where 1=1";
-            where = string.IsNullOrEmpty(Models.Author) ? "" : " and Author like '%'+@Author+'%'";
-            where = string.IsNullOrEmpty(Models.Content) ? "" : " and Content like '%'+@Content+'%'";
-            where = string.IsNullOrEmpty(Models.Label) ? "" : " and Label like '%'+@Label+'%'";
-            where = string.IsNullOrEmpty(Models.Title) ? "" : " and Title like '%'+@Title+'%'";
-            where = string.IsNullOrEmpty(Models.Time1) ? "" : " and Time >= cast(@Time1 as datetime)";
-            where = string.IsNullOrEmpty(Models.Time2) ? "" : " and Time <= cast(@Time2 as datetime)";
-            where = string.IsNullOrEmpty(Models.LastTime1) ? "" : " and LastTime >= cast(@LastTime1 as datetime)";
-            where = string.IsNullOrEmpty(Models.LastTime2) ? "" : " and LastTime <= cast(@LastTime2 as datetime)";
-            string sqlText = "select * from ContentList";
-            SqlParameter[] parameters = { new SqlParameter("@Author", Models.Author) };
-            return contentListBLL.QueryBySqlData(sqlText, parameters);
-        }
-        public void Lambdas(ContentListWhere Where)
-        {
-            Expression<Func<Model.ContentList, bool>> exp = c => true;
+            Expression<Func<ContentList, bool>> exp = LambdasHelper.True<ContentList>() ;
+            if (CookieHelper.GetCookie("ContentListShow") == "1")
+                exp = exp.And(c => c.IsShow == true);
+            if (Where == null) return exp;
             if (!string.IsNullOrEmpty(Where.Author))
-                exp = exp.And(c => c.Author.Contains("P"));
+                exp = exp.And(c => c.Author.Contains(Where.Author));
             if (!string.IsNullOrEmpty(Where.Content))
-                exp = exp.And(c => c.Author.Contains("P"));
+                exp = exp.And(c => c.Content.Contains(Where.Content));
             if (!string.IsNullOrEmpty(Where.Title))
-                exp = exp.And(c => c.Author.Contains("P"));
+                exp = exp.And(c => c.Title.Contains(Where.Title));
             if (!string.IsNullOrEmpty(Where.Label))
-                exp = exp.And(c => c.Author.Contains("P"));
-            if (Where.IsShow)
-                exp = exp.And(c => c.Author.Contains("P"));
+                exp = exp.And(c => c.Label.Contains(Where.Label));
             if (!string.IsNullOrEmpty(Where.LastTime1))
-                exp = exp.And(c => c.Author.Contains("P"));
-
+                exp = exp.And(c => c.LastTime >= DateTime.Parse(Where.LastTime1));
+            if (!string.IsNullOrEmpty(Where.LastTime2))
+                exp = exp.And(c => c.LastTime <= DateTime.Parse(Where.LastTime2));
+            if (!string.IsNullOrEmpty(Where.Time1))
+                exp = exp.And(c => c.Time >= DateTime.Parse(Where.Time1));
+            if (!string.IsNullOrEmpty(Where.Time2))
+                exp = exp.And(c => c.Time <= DateTime.Parse(Where.Time2));
+            return exp;
         }
     }
 }

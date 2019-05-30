@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
+using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
@@ -27,7 +28,7 @@ namespace Testboker.DAL
 
         public bool SaveChanges()
         {
-            return _dbContext.SaveChanges() > 0;
+            return _dbContext.SaveChanges()>0;
         }
         public void Update(TEntity tEntity)
         {
@@ -39,11 +40,11 @@ namespace Testboker.DAL
         {
             _dbSet.AddOrUpdate(tEntity);
         }
-        public TEntity QueryEntity(Func<TEntity, bool> whereLamebda)
+        public TEntity QueryEntity(Expression<Func<TEntity, bool>> whereLamebda)
         {
             return _dbSet.FirstOrDefault(whereLamebda);
         }
-        public IEnumerable<TEntity> QueryEntities(Func<TEntity, bool> whereLamebda)
+        public IEnumerable<TEntity> QueryEntities(Expression<Func<TEntity, bool>> whereLamebda)
         {
             return _dbSet.Where(whereLamebda);
         }
@@ -59,7 +60,7 @@ namespace Testboker.DAL
             return result;
         }
 
-        public int QueryCount(Func<TEntity, bool> whereLamebda)
+        public int QueryCount(Expression<Func<TEntity, bool>> whereLamebda)
         {
             return _dbSet.Count(whereLamebda);
         }

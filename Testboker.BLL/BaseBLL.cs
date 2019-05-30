@@ -33,11 +33,11 @@ namespace Testboker.BLL
             _baseDLL.Delete(tEntity);
             return _baseDLL.SaveChanges();
         }
-        public TEntity GetEntity(Func<TEntity, bool> whereLamebda)
+        public TEntity GetEntity(Expression<Func<TEntity, bool>> whereLamebda)
         {
             return _baseDLL.QueryEntity(whereLamebda);
         }
-        public IEnumerable<TEntity> GetEntities(Func<TEntity, bool> whereLamebda)
+        public IEnumerable<TEntity> GetEntities(Expression<Func<TEntity, bool>> whereLamebda)
         {
             return _baseDLL.QueryEntities(whereLamebda);
         }
@@ -46,7 +46,7 @@ namespace Testboker.BLL
         {
             return _baseDLL.GetEntitiesByuPage(pageSize, pageIndex, isAsc, whereLamebda, orderByLamebda);
         }
-        public int GetCount(Func<TEntity, bool> whereLamebda)
+        public int GetCount(Expression<Func<TEntity, bool>> whereLamebda)
         {
             return _baseDLL.QueryCount(whereLamebda);
         }

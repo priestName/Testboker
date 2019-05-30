@@ -121,6 +121,9 @@ table {
     height:34px;
     line-height:34px;
 }
+.PageInfo {
+    margin-left:15px;
+}
 .IsPage {
     width:30px;
 }

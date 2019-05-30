@@ -26,7 +26,7 @@ namespace Testboker.admin.Controllers
         }
         public ActionResult VisitList(int pageIndex = 1, int pageItems = 25)
         {
-            homeViewModel.LoginLog = loginlog.GetEntitiesByPpage(pageItems, pageIndex, true, c => true, c => c.Id);
+            homeViewModel.LoginLog = loginlog.GetEntitiesByPpage(pageItems, pageIndex, false, c => true, c => c.Time);
             listViewModel.PageItems = pageItems == listViewModel.PageItems ? listViewModel.PageItems : pageItems;
             listViewModel.LoginLog = homeViewModel.LoginLog.ToPagedList(pageIndex, listViewModel.PageItems);
             listViewModel.LoginLog.PageSize = listViewModel.PageItems;

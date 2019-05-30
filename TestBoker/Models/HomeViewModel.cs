@@ -10,5 +10,6 @@ namespace TestBoker.Models
     {
         public IEnumerable<Banner> Banners { get; set; }
         public IEnumerable<ContentList> contentList { get; set; }
+        public IEnumerable<ContentList> exhibitionList { get; set; }
     }
 }

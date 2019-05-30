@@ -1,6 +1,45 @@
 ﻿@model TestBoker.Models.HomeViewModel
-@foreach (var item in Model.Banners)
-{
-    <div id="@item">@item.Img</div>
-}
+
+<div id="slider" class="mui-slider">
+    <div class="mui-slider-group mui-slider-loop">
+        <!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
+        <div class="mui-slider-item mui-slider-item-duplicate">
+            <a href="#">
+                <img src="~/Content/BannerImg/@Model.Banners.Last().Img">
+                <p class="mui-slider-title">@Model.Banners.Last().Title</p>
+            </a>
+        </div>
+        @foreach (var item in Model.Banners)
+        {
+            <div class="mui-slider-item">
+                <a href="#">
+                    <img src="~/Content/BannerImg/@item.Img">
+                    <p class="mui-slider-title">@item.Title</p>
+                </a>
+            </div>
+        }
+        <!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
+        <div class="mui-slider-item mui-slider-item-duplicate">
+            <a href="#">
+                <img src="~/Content/BannerImg/@Model.Banners.First().Img">
+                <p class="mui-slider-title">@Model.Banners.First().Title</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="mui-slider-indicator mui-text-right">
+        @foreach (var item in Model.Banners)
+        {
+            if (Model.Banners.ToList().IndexOf(item) == 0)
+            {
+                <div class="mui-indicator mui-active"></div>
+            }
+            else
+            {
+                <div class="mui-indicator"></div>
+            }
+
+        }
+    </div>
+</div>
 

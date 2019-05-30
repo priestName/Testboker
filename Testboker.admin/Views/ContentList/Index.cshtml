@@ -17,7 +17,6 @@
     <link href="~/scripts/xcConfirm/Css/xcConfirm.css" rel="stylesheet" />
     <link href="~/scripts/jQueryTime/Css/calendar.css" rel="stylesheet"  type="text/css"/>
     <script src="~/scripts/jQueryTime/calendar.min.js" type="text/javascript"></script>
-
 </head>
 <body>
     <div class="Main">
@@ -30,7 +29,7 @@
             <input id="NotIsShow" class="NotIsShow" type="checkbox" /><label for="NotIsShow">屏蔽不展示内容</label>
             <a class="AddContent" href="@Url.Action("ContentItem","ContentList")" title="新增文章">新增</a><br />
 
-            <label>添加时间：</label><input class="AddTime1" id="AddTime1" type="text" />-<input class="AddTime2" id="AddTime2" type="text" />
+            <label>添加时间：</label><input class="AddTime1" id="AddTime1" type="text"/>-<input class="AddTime2" id="AddTime2" type="text" />
             <label>最后修改时间：</label><input class="LastTime1" id="LastTime1" type="text" />-<input class="LastTime2" id="LastTime2" type="text" />
             
             
@@ -53,7 +52,7 @@
                         <td>@(Model.ContentList.IndexOf(item) + (Model.ContentList.CurrentPageIndex - 1) * Model.ContentList.PageSize+1)</td>
                         <td><input type="text" readonly="readonly" class="Author" value="@item.Author" /></td>
                         <td><input type="text" readonly="readonly" class="Title" value="@item.Title"/></td>
-                        <td><input type="text" readonly="readonly" class="Img" value="@item.Img" /></td>
+                        <td>@item.Img</td>
                         <td><input type="text" readonly="readonly" class="Label" value="@item.Label" /></td>
                         <td>@item.Time</td>
                         <td>@item.LastTime</td>
@@ -68,24 +67,27 @@
             </table>
         </div>
         <div class="Foot">
-            <span class="Page">当前第@(Model.ContentList.CurrentPageIndex)页/共@(Model.ContentList.TotalItemCount/Model.ContentList.PageSize)页</span>
+            <span class="Page">当前第@(Model.ContentList.CurrentPageIndex)页/共@(Math.Ceiling((decimal)Model.ContentList.TotalItemCount / Model.ContentList.PageSize))页</span>
             <span>每页&nbsp;<input type="text" class="PageItems" readonly="readonly" value="@Model.PageItems"/>行&nbsp;/共@(Model.ContentList.TotalItemCount)条记录</span>
-            @Html.Pager(Model.ContentList, new PagerOptions {
-                NumericPagerItemCount = 5,
-                PageIndexParameterName = "pageIndex",//控制器参数
-                ContainerTagName = "span",//分页容器形式（默认好像是div）
-                CssClass = "NumPager",//容器css class
-                ShowMorePagerItems = false,//“更多”按钮不显示
-                CurrentPagerItemTemplate = "<span class=\"current\">{0}</span>",//当前按钮 模版
-                DisabledPagerItemTemplate = "<span class=\"disable\">{0}</span>",//不可用按钮 模版
-                PagerItemTemplate = "<span class=\"able\">{0}</span>",//可用按钮 模版
-                FirstPageText = "首页",
-                PrevPageText = "上一页",
-                NextPageText = "下一页",
-                LastPageText = "末页",
-                PageIndexBoxId = "pagebox",
-                GoToButtonId = "goBtn"
-            })
+            <span class="PageInfo @(Model.ContentList.TotalItemCount <= Model.ContentList.PageSize ? "hide" : "")">
+                @Html.Pager(Model.ContentList, new PagerOptions
+                   {
+                       NumericPagerItemCount = 5,
+                       PageIndexParameterName = "pageIndex",//控制器参数
+                       ContainerTagName = "span",//分页容器形式（默认是div）
+                       CssClass = "NumPager",//容器css class
+                       ShowMorePagerItems = false,//“更多”按钮不显示
+                       CurrentPagerItemTemplate = "<span class=\"current\">{0}</span>",//当前按钮 模版
+                       DisabledPagerItemTemplate = "<span class=\"disable\">{0}</span>",//不可用按钮 模版
+                       PagerItemTemplate = "<span class=\"able\">{0}</span>",//可用按钮 模版
+                       FirstPageText = "首页",
+                       PrevPageText = "上一页",
+                       NextPageText = "下一页",
+                       LastPageText = "末页",
+                       PageIndexBoxId = "pagebox",
+                       GoToButtonId = "goBtn"
+                   })
+            </span>
             <span class="IsPageGo"><input type="text" class="IsPage" /><input type="button" value="GO" class="PageGo"/></span>
         </div>
     </div>
@@ -167,9 +169,9 @@
                 type: "post",
                 data: {
                     id: Rows,
-                    Title: $(".tr" + Rows).find("Title").val(),
-                    Img: $(".tr" + Rows).find("Img").val(),
-                    Label: $(".tr" + Rows).find("Label").val()
+                    Title: $(".tr" + Rows).find(".Title").val(),
+                    Author: $(".tr" + Rows).find(".Author").val(),
+                    Label: $(".tr" + Rows).find(".Label").val()
                 },
                 success: function (result) {
                     if (result.toLowerCase() == "true")

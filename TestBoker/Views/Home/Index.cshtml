@@ -1,18 +1,63 @@
 ﻿@model TestBoker.Models.HomeViewModel
 @{
     ViewBag.Title = "Index";
-    Layout = "~/Views/_LayoutBanner.cshtml";
+    Layout = "~/Views/_LayoutDefault.cshtml";
 }
 <link href="~/Content/Css/Index.css" rel="stylesheet" />
-<div class="ContentMain">
-    @foreach (var item in Model.contentList)
-    {
-        <div class="ContentList" id="cl(@item.Id)">
-            <div class="img"><img src="~/Content/ContentImg/@item.Img" /></div>
-            <div class="contentMain">
-                <div class="title">@item.Title</div>
-                <p class="content">@item.Content</p>
-            </div>
-        </div>
-    }
+<div class="banner">
+    @Html.Action("Banner", "Home")
 </div>
+<div class="ContentMain">
+    <ul class="mui-table-view">
+        @foreach (var item in Model.contentList)
+        {
+            <li class="mui-table-view-cell mui-media ContentList"  id="cl_@item.Id">
+                <a href="javascript:;">
+                    <img class="mui-media-object mui-pull-left" src="~/Content/ContentImg/@item.Img">
+                    <div class="mui-media-body">
+                        @item.Title
+                        <p class='mui-ellipsis-2'>@item.Content</p>
+                    </div>
+                </a>
+            </li>
+        }
+    </ul>
+</div>
+<input type="hidden" value="1" id="PageIndex" />
+@section Style{
+<style>
+    .hide {
+        display:none;
+    }
+    .LoadHint {
+        width:100%;
+        height:54%;
+        background-color:#aaa;
+        opacity:0.4;
+        position:absolute;
+        z-index:999;
+        top:0;
+        left:0;
+        text-align:center;
+        color:#000;
+        font-weight:500;
+        padding-top:70%;
+    }
+    .mui-slider {
+        height:100%;
+    }
+    .mui-slider-item a{height:100%}
+    .mui-slider .mui-slider-group {
+        height: 100%
+    }
+</style>
+}
+@section Script{
+    <script>
+        mui("#slider").slider({
+            interval: 5000
+        });
+    </script>
+}
+
+
