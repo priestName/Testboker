@@ -3,7 +3,7 @@ using Testboker.IDAL;
 
 namespace Testboker.DAL
 {
-    public class ExhibitionDAL:BaseDAL<Banner>,BannerIDAL
+    public class ExhibitionDAL:BaseDAL<Exhibition>, ExhibitionIDAL
     {
     }
 }

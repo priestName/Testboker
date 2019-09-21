@@ -1,0 +1,170 @@
+﻿@model Testboker.admin.Models.ListViewModel
+@using Webdiyer.WebControls.Mvc;
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link rel="stylesheet" href="~/Content/Css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/Css/Index.css" rel="stylesheet" />
+    <script src="~/scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/scripts/Default.js"></script>
+    <script src="~/scripts/xcConfirm/xcConfirm.js"></script>
+    <link href="~/scripts/xcConfirm/Css/xcConfirm.css" rel="stylesheet" />
+    <link href="~/scripts/jQueryTime/Css/calendar.css" rel="stylesheet" type="text/css" />
+    <script src="~/scripts/jQueryTime/calendar.min.js" type="text/javascript"></script>
+</head>
+<body>
+    <div class="Main">
+        <div class="Select">
+            <label>标题：</label><input class="Title" type="text" />
+            <label>相关信息：</label><input class="Synopsis" type="text" />
+            <label>添加时间：</label><input class="AddTime1" id="AddTime1" type="text" />-<input class="AddTime2" id="AddTime2" type="text" />
+            <input type="button" class="SaveBut" value="查询" />
+            <a class="AddContent" href="@Url.Action("ExhibitionItem","Exhibition")" title="新增文章">新增</a><br />
+        </div>
+        <div class="ExhibitionLists">
+            <table class="ExhibitionList">
+                <tr class="TableTiTle">
+                    <td>序号</td>
+                    <td>名称</td>
+                    <td>地址</td>
+                    <td>封面</td>
+                    <td>标签</td>
+                    <td>上传时间</td>
+                    <td>操作</td>
+                </tr>
+                @foreach (var item in Model.Exhibition)
+                {
+                    <tr class="tr@(item.Id)">
+                        <td>@(Model.Exhibition.IndexOf(item) + (Model.Exhibition.CurrentPageIndex - 1) * Model.Exhibition.PageSize + 1)</td>
+                        <td><input type="text" readonly="readonly" class="Title" value="@item.Title" /></td>
+                        <td><input type="text" readonly="readonly" class="SrcUrl" value="@item.Src" /></td>
+                        <td>@item.Img</td>
+                        <td><input type="text" readonly="readonly" class="Synopsis" value="@item.Synopsis" /></td>
+                        <td>@item.Time</td>
+                        <td class="Operation" width="80px" id="@(item.Id)">
+                            <a class="Edit" href="#" title="修改"><i class="fa fa-pencil"></i></a>
+                            <a class="Save hides" href="#" title="确认修改"><i class="fa fa-check"></i></a>
+                            <a class="ThisMain" href="@Url.Action("ExhibitionItem","Exhibition",new {id=item.Id })" title="详情/修改"><i class="fa fa-list"></i></a>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="Foot">
+            <span class="Page">当前第@(Model.Exhibition.CurrentPageIndex)页/共@(Math.Ceiling((decimal)Model.Exhibition.TotalItemCount / Model.Exhibition.PageSize))页</span>
+            <span>每页&nbsp;<input type="text" class="PageItems" readonly="readonly" value="@Model.PageItems" />行&nbsp;/共@(Model.Exhibition.TotalItemCount)条记录</span>
+            <span class="PageInfo @(Model.Exhibition.TotalItemCount <= Model.Exhibition.PageSize ? "hide" : "")">
+                @Html.Pager(Model.Exhibition, new PagerOptions
+                   {
+                       NumericPagerItemCount = 5,
+                       PageIndexParameterName = "pageIndex",//控制器参数
+                       ContainerTagName = "span",//分页容器形式（默认是div）
+                       CssClass = "NumPager",//容器css class
+                       ShowMorePagerItems = false,//“更多”按钮不显示
+                       CurrentPagerItemTemplate = "<span class=\"current\">{0}</span>",//当前按钮 模版
+                       DisabledPagerItemTemplate = "<span class=\"disable\">{0}</span>",//不可用按钮 模版
+                       PagerItemTemplate = "<span class=\"able\">{0}</span>",//可用按钮 模版
+                       FirstPageText = "首页",
+                       PrevPageText = "上一页",
+                       NextPageText = "下一页",
+                       LastPageText = "末页",
+                       PageIndexBoxId = "pagebox",
+                       GoToButtonId = "goBtn"
+                   })
+            </span>
+            <span class="IsPageGo"><input type="text" class="IsPage" /><input type="button" value="GO" class="PageGo" /></span>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            var IsPageItems = 0;
+            $(".AddTime1,.AddTime2,.LastTime1,.LastTime2").focus(function () {
+                if ($("#" + $(this).attr("id") + "Calendar").length == 0) {
+                    $(this).calendar({
+                        upperLimit: new Date(),
+                        lowerLimit: new Date("2011/01/01")
+                    });
+                }
+            })
+            $(".SaveBut").click(function () {
+                var where = ""; 
+                $(".Title").val() == "" ? where += "" : where += "\"Title\":\"" + $(".Title").val() + "\","
+                $(".Synopsis").val() == "" ? where += "" : where += "\"Synopsis\":\"" + $(".Synopsis").val() + "\","
+                $(".AddTime1").val() == "" ? where += "" : where += "\"Time1\":\"" + $(".AddTime1").val() + "\","
+                $(".AddTime2").val() == "" ? where += "" : where += "\"Time2\":\"" + $(".AddTime2").val() + "\","
+                where = where == "" ? "" : "{" + where.substring(0, where.length - 1) + "}"
+                location.href = "@Url.Action("Index", "Exhibition")?where="+ where;
+            })
+            $(".PageGo").click(function () {
+                location.href = "@Url.Action("Index", "Exhibition")?pageIndex=" + $(".IsPage").val();
+            })
+            $(".Edit").click(function () {
+                var Rows = $(this).parents("td").attr("id");
+                var IsEdit = $(this).children("i").hasClass("fa-pencil");
+                if (IsEdit) {
+                    $(".tr" + Rows).find("input").removeAttr("readonly").css("background-color", "#fff");
+                    $("#Show" + Rows).removeAttr("disabled").css("background-color", "#fff");
+                    $(this).children("i").removeClass("fa-pencil").addClass("fa-remove")
+                    $(".tr" + Rows).find(".Save").show();
+                    $(".tr" + Rows).find(".ThisMain").hide();
+                }
+                else {
+                    $(".tr" + Rows).find("input").attr("readonly", "readonly").css("background-color", "#dbdbdb");
+                    $("#Show" + Rows).attr("disabled", "disabled").css("background-color", "#dbdbdb");
+                    $(this).children("i").removeClass("fa-remove").addClass("fa-pencil")
+                    $(".tr" + Rows).find(".Save").hide();
+                    $(".tr" + Rows).find(".ThisMain").show();
+                }
+            })
+            $(".Save").click(function () {
+                var Rows = $(this).parents("td").attr("id");
+                $.ajax({
+                    url: "@Url.Action("EditContent", "ContentList")",
+                    type: "post",
+                    data: {
+                        id: Rows,
+                        Title: $(".tr" + Rows).find(".Title").val(),
+                        SrcUrl: $(".tr" + Rows).find(".SrcUrl").val(),
+                        Synopsis: $(".tr" + Rows).find(".Synopsis").val(),
+                    },
+                    success: function (result) {
+                        if (result.toLowerCase() == "true")
+                        {
+                            window.wxc.xcConfirm("修改成功", window.wxc.xcConfirm.typeEnum.success);
+                            $(".ok,.clsBtn").click(function () {
+                                $(".tr" + Rows).find("input").attr("readonly", "readonly").css("background-color", "#dbdbdb");
+                                $("#Show" + Rows).attr("disabled", "disabled").css("background-color", "#dbdbdb");
+                                $(".tr" + Rows).find(".Edit").children("i").removeClass("fa-remove").addClass("fa-pencil")
+                                $(".tr" + Rows).find(".Save").hide();
+                                $(".tr" + Rows).find(".ThisMain").show();
+                            });
+                        }
+                        else
+                            window.wxc.xcConfirm("修改失败", window.wxc.xcConfirm.typeEnum.error);
+                        setTimeout(function () { $(".ok").click() }, 2000)
+                    }
+                })
+            })
+            $(".PageItems").click(function () {
+                IsPageItems = $(".PageItems").val();
+                $(this).removeAttr("readonly")
+            })
+            $(".PageItems").blur(function () {
+                if (IsPageItems != $(".PageItems").val())
+                {
+                    location.href = "@Url.Action("Index", "Exhibition")?pageItems=" + $(".PageItems").val();
+                }
+                $(this).attr("readonly", "readonly")
+            })
+        })
+    </script>
+</body>
+</html>

@@ -18,9 +18,9 @@
         @RenderBody()
     </div>
     <div class="nav">
-        <div><a href="@Url.Action("Index","Home")"><i class="fa fa-home fa-2x"></i></a></div>
-        <div><a href="@Url.Action("Index","ContentList")"><i class="fa fa-list fa-2x"></i></a></div>
-        <div><a href="@Url.Action("Index","Exhibition")"><i class="fa fa-window-restore fa-2x"></i></a></div>
+        <div title="首页推荐"><a href="@Url.Action("Index","Home")"><i class="fa fa-home fa-2x"></i></a></div>
+        <div title="文章浏览"><a href="@Url.Action("Index","ContentList")"><i class="fa fa-list fa-2x"></i></a></div>
+        <div title="Demo展示"><a href="@Url.Action("Index","Exhibition")"><i class="fa fa-window-restore fa-2x"></i></a></div>
     </div>
     <script>
         $(".nav div").css("line-height", ($(".nav").height() + 15) + "px")

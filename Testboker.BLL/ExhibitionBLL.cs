@@ -6,7 +6,7 @@ namespace Testboker.BLL
 {
     public class ExhibitionBLL : BaseBLL<Exhibition>, ExhibitionIBLL
     {
-        public ExhibitionBLL(ExhibitionIDAL exhibitionDLL) : base(exhibitionDLL)
+        public ExhibitionBLL(ExhibitionIDAL exhibitionIDAL) : base(exhibitionIDAL)
         {
         }
     }

@@ -16,6 +16,10 @@ namespace Testboker.admin.Controllers
         static HomeViewModel homeViewModel = new HomeViewModel();
         ListViewModel listViewModel = new ListViewModel();
         // GET: VisitMainList
+        public ActionResult index()
+        {
+            return View();
+        }
         public ActionResult VisitOpinions()
         {
             return View();

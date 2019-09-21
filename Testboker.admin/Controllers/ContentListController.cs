@@ -24,7 +24,8 @@ namespace Testboker.admin.Controllers
             ContentListWhere ModelWhere= new JavaScriptSerializer().Deserialize<ContentListWhere>(where);
             homeViewModel.ContentList = contentListBLL.GetEntitiesByPpage(pageItems, pageIndex, true, Lambdas(ModelWhere), c => c.Id);
 
-            listViewModel.PageItems = pageItems == listViewModel.PageItems ? listViewModel.PageItems : pageItems;
+            //listViewModel.PageItems = pageItems == listViewModel.PageItems ? listViewModel.PageItems : pageItems;
+            listViewModel.PageItems = pageItems;
             listViewModel.ContentList = homeViewModel.ContentList==null?null:homeViewModel.ContentList.ToPagedList(pageIndex, listViewModel.PageItems);
             listViewModel.ContentList.PageSize = listViewModel.PageItems;
             listViewModel.ContentList.TotalItemCount = contentListBLL.GetCount(Lambdas(ModelWhere));
@@ -93,13 +94,16 @@ namespace Testboker.admin.Controllers
         }
         public void BaseInImg(string ImgBase, string ImgName)
         {
-            byte[] arr = Convert.FromBase64String(ImgBase);
-            MemoryStream ms = new MemoryStream(arr);
-            Bitmap bmp = new Bitmap(ms);
-            string dbstring = Directory.GetParent(Server.MapPath("~/")).Parent.FullName + @"\TestBoker\Content\ContentImg\";
-            bmp.Save(dbstring + ImgName, System.Drawing.Imaging.ImageFormat.Jpeg);
-            bmp.Save(Server.MapPath("~/Content/ContentImg/") + ImgName, System.Drawing.Imaging.ImageFormat.Jpeg);
-            ms.Close();
+
+            new MainHelper().BaseInImg(ImgBase, Request["ImgName"].ToString());
+
+            //byte[] arr = Convert.FromBase64String(ImgBase);
+            //MemoryStream ms = new MemoryStream(arr);
+            //Bitmap bmp = new Bitmap(ms);
+            //string dbstring = Directory.GetParent(Server.MapPath("~/")).Parent.FullName + @"\TestBoker\Content\ContentImg\";
+            //bmp.Save(dbstring + ImgName, System.Drawing.Imaging.ImageFormat.Jpeg);
+            //bmp.Save(Server.MapPath("~/Content/ContentImg/") + ImgName, System.Drawing.Imaging.ImageFormat.Jpeg);
+            //ms.Close();
 
         }
         public Expression<Func<ContentList, bool>> Lambdas(ContentListWhere Where)

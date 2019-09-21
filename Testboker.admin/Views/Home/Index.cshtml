@@ -1,4 +1,4 @@
-﻿
+﻿@model Testboker.admin.Models.HomeViewModel
 @{
     Layout = null;
 }
@@ -8,12 +8,126 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <script src="~/scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/scripts/jquery-ui.min.js"></script>
+    <script src="~/scripts/echarts.js"></script>
+    <script src="~/scripts/Default.js"></script>
+    <link href="~/Content/Css/jquery-ui.min.css" rel="stylesheet" />
     <title>Index</title>
+    <style>
+        .chart {
+            height: 300px;
+            width: 45%;
+            margin: 0px;
+            padding: 0px;
+            float: left;
+            margin-right: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="Main">
-        <div class="Newlog"></div>
-        <div class="Newlog"></div>
+        <div class="chart" id="WeekDays"></div>
+        <div class="chart" id="YearDays"></div>
+        <div class="chart" id="UserCount"></div>
     </div>
 </body>
 </html>
+<script>
+    var getOption = function (xAxisdata, seriesdata,chartType) {
+        var linechartOption = {
+            grid: {
+                x: 35,
+                x2: 10,
+                y: 30,
+                y2: 25
+            },
+            xAxis: {
+                data: xAxisdata,
+                axisTick: { show: false },
+                axisLabel: {
+                    interval: 0,
+                    textStyle: {
+                        color: '#818181'
+                    }
+                }
+            },
+            yAxis: {
+                minInterval: 1,
+                splitLine: { show: false }
+            },
+            series: [{
+                type: chartType,
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'outside',
+                        formatter: '{c}',
+                        textStyle: { color: '#bb0004' }
+                    }
+                },
+                data: seriesdata
+            }]
+        }
+        var barchartOption = {
+            grid: {
+                x: 35,
+                x2: 10,
+                y: 30,
+                y2: 50
+            },
+            xAxis: {
+                data: xAxisdata,
+                axisTick: { show: false },
+                axisLabel: {
+                    interval: 0,
+                    rotate: 25,
+                    textStyle: {
+                        color: '#818181'
+                    }
+                }
+            },
+            yAxis: {
+                minInterval: 1,
+                splitLine: { show: false }
+            },
+            series: [{
+                type: chartType,
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'outside',
+                        formatter: '{c}',
+                        textStyle: { color: '#bb0004' }
+                    }
+                },
+                data: seriesdata
+            }]
+        };
+        return chartType == 'line' ? linechartOption : barchartOption;
+    };
+    var byId = function (id) {
+        return document.getElementById(id);
+    };
+    var dateTime = new Date();
+    var Weekdate = [
+        new Date(dateTime.getTime() - 1000 * 60 * 60 * 24 * 6).Format("MM-dd"),
+        new Date(dateTime.getTime() - 1000 * 60 * 60 * 24 * 5).Format("MM-dd"),
+        new Date(dateTime.getTime() - 1000 * 60 * 60 * 24 * 4).Format("MM-dd"),
+        new Date(dateTime.getTime() - 1000 * 60 * 60 * 24 * 3).Format("MM-dd"),
+        new Date(dateTime.getTime() - 1000 * 60 * 60 * 24 * 2).Format("MM-dd"),
+        new Date(dateTime.getTime() - 1000 * 60 * 60 * 24 * 1).Format("MM-dd"),
+        dateTime.Format("MM-dd")
+    ]
+    var Month = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+    var WeekDays = echarts.init(byId('WeekDays'));
+    WeekDays.setOption(getOption(Month,@Model.YearDays, 'line'), true);
+    var YearDays = echarts.init(byId('YearDays'));
+    YearDays.setOption(getOption(Weekdate,@Model.WeekDays, 'line'), true);
+    var UserCount = echarts.init(byId('UserCount'));
+    UserCount.setOption(getOption(@Html.Raw(Model.UserName),@Model.UserCount, 'bar'), true);
+
+
+
+
+</script>

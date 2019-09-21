@@ -25,5 +25,14 @@ namespace Testboker.Model
         public string Synopsis { get; set; }
 
         public DateTime Time { get; set; }
+
+        public bool IsShow { get; set; }
+    }
+    public partial class ExhibitionWhere
+    {
+        public string Title = string.Empty;
+        public string Synopsis = string.Empty;
+        public string Time1 = string.Empty;
+        public string Time2 = string.Empty;
     }
 }

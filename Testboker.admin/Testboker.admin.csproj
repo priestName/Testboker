@@ -26,6 +26,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -163,6 +164,7 @@
     <Content Include="Content\emoji\js\emoji-picker.js" />
     <Content Include="Content\emoji\js\jquery.emojiarea.js" />
     <Content Include="Content\emoji\js\util.js" />
+    <Content Include="scripts\echarts.js" />
     <Content Include="scripts\jQueryTime\calendar.min.js" />
     <Content Include="scripts\jQueryTime\images\date_bg.png" />
     <Content Include="scripts\xcConfirm\img\icons.png" />
@@ -254,6 +256,7 @@
     </Compile>
     <Compile Include="Helper\CookieHelper.cs" />
     <Compile Include="Helper\LambdasHelper.cs" />
+    <Compile Include="Helper\MainHelper.cs" />
     <Compile Include="Models\ContentListViewModel.cs" />
     <Compile Include="Models\ExhibitionViewModel.cs" />
     <Compile Include="Models\HomeViewModel.cs" />
@@ -273,6 +276,9 @@
     <Content Include="Views\ContentList\Index.cshtml" />
     <Content Include="Views\ContentList\ContentItem.cshtml" />
     <Content Include="Views\VisitMainList\VisitList.cshtml" />
+    <Content Include="Views\VisitMainList\index.cshtml" />
+    <Content Include="Views\Exhibition\Index.cshtml" />
+    <Content Include="Views\Exhibition\ExhibitionItem.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -285,7 +291,6 @@
     <Folder Include="Content\ContentImg\" />
     <Folder Include="Content\Image\" />
     <Folder Include="Views\Banner\" />
-    <Folder Include="Views\Exhibition\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Testboker.IBLL\Testboker.IBLL.csproj">

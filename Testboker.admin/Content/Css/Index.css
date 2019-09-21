@@ -106,15 +106,15 @@ table {
 .Foot span {
     float:left;
 }
-.ContentLists {
+.ContentLists,ExhibitionLists {
     max-height: calc(100% - 90px);
     overflow-x: hidden;
     overflow-y: scroll;
 }
 
-.ContentLists::-webkit-scrollbar {
-    display: none;
-}
+    .ContentLists::-webkit-scrollbar, ExhibitionLists::-webkit-scrollbar {
+        display: none;
+    }
 
 .Page {
     padding-right:10px;

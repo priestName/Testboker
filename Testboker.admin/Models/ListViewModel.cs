@@ -11,6 +11,7 @@ namespace Testboker.admin.Models
     {
         public PagedList<ContentList> ContentList { get; set; }
         public PagedList<LoginLog> LoginLog { get; set; }
+        public PagedList<Exhibition> Exhibition { get; set; }
         public string Search { get; set; }
         public string Category { get; set; }
         public string SortBy { get; set; }

@@ -1,35 +1,115 @@
-﻿@model TestBoker.Models.HomeViewModel
-@{
+﻿@{
     ViewBag.Title = "Index";
     Layout = "~/Views/_LayoutDefault.cshtml";
 }
+
 <link href="~/Content/Css/Exhibition.css" rel="stylesheet" />
-<div class="Search">
-    <div class="SearchBox">
-        <div class="SearchBut"><i class="fa fa-search"></i></div>
-        <div class="SearchType"><input type="text" /></div>
+<form id="searchForm" class="Search" action="#" onsubmit="">
+    <div class="mui-input-row mui-search">
+        <input type="search" class="SearchText mui-input-clear" placeholder="请输入关键字">
+    </div>
+</form>
+<div class="ContentMain" id="ContentMain">
+    <div id="Contentpull" class="mui-content mui-scroll-wrapper">
+        <div class="mui-scroll">
+            <ul class="mui-table-view"></ul>
+        </div>
     </div>
 </div>
-<div class="ContentMain">
-    @foreach (var item in Model.exhibitionList)
-    {
-        <div class="ContentList" id="cl(@item.Id)">
-            <a href="#">
-                <div class="img">@item.Img</div>
-                <div class="title">@item.Title</div>
-            </a>
-        </div>
-    }
+<input type="hidden" value="1" id="PageIndex" />
+<script id="page-tmpl" type="text/x-jquery-tmpl">
+    <li class="ContentList" id="cl_${Id}">
+        <a href="#">
+            <div class="img"><img class="mui-media-object mui-pull-left" src="/Content/ContentImg/${Img}"></div>
+            <div class="title">${Title}</div>
+        </a>
+    </li>
+</script>
 @section style
 {
-<style>
-    .top {
-        height: 93%;
-    }
+    <style>
+        .top {
+            height: 93%;
+        }
 
-    .ContentMain {
-        height: 94%;
-    }
-</style>
+        .ContentMain {
+            height: 94%;
+        }
+    </style>
 }
-</div>
+@section Script{
+    <script>
+        var s = 1; i = 0;
+        mui.init({
+            pullRefresh: {
+                container: '#Contentpull',
+                down: {
+                    style: 'circle',
+                    callback: pulldownRefresh
+                },
+                up: {
+                    auto: true,
+                    contentrefresh: '正在加载...',
+                    callback: pullupRefresh
+                }
+            }
+        });
+
+        $(function () {
+            $('#searchForm').bind('search', function () {
+                $("#PageIndex").val(1)
+                if ($(".SearchText").val() == "")
+                    i = 0;
+                else
+                    i = 1;
+                $("#ContentMain ul li").remove();
+                $(".mui-scroll").css("transform", "translate3d(0px, 0px, 0px) translateZ(0px)");
+                $(".mui-scroll").css("transform", "translate3d(0px, 0px, 0px) translateZ(0px)").css("transition-duration", "0ms").css("transition-timing-function", "cubic-bezier(0.165, 0.84, 0.44, 1)");
+                dateList()
+                document.activeElement.blur();
+            })
+        })
+        function pulldownRefresh() {
+            setTimeout(function () {
+                $("#PageIndex").val(1);
+                $(".SearchText").val("");
+                i = 0;
+                dateList();
+                mui('#Contentpull').pullRefresh().endPulldownToRefresh();
+                mui.toast("刷新成功");
+            }, 1500);
+        }
+        function pullupRefresh() {
+            setTimeout(function () {
+                mui('#Contentpull').pullRefresh().endPullupToRefresh((s != 1 )); //参数为true代表没有更多数据了。
+                dateList();
+            }, 1500);
+        }
+        function dateList()
+        {
+            var PageIndex = parseInt($("#PageIndex").val());
+            var SearchText = i == 1 ? $(".SearchText").val() : "";
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("ExhibitionList", "Exhibition")",
+                data: { pageIndex: PageIndex, searchText: SearchText },
+                dataType: "json",
+                success: function (result) {
+                    if (result != "") {
+                        if (PageIndex == 1) {
+                            $("#ContentMain ul li").remove();
+                            $("#ContentMain ul").append($("#page-tmpl").tmpl(eval(result)))
+                        }
+                        else
+                            $("#ContentMain ul").append($("#page-tmpl").tmpl(eval(result)))
+                        $("#PageIndex").val(PageIndex + 1)
+                        s = 1
+                    }
+                    if (result.length==10)
+                        s = 1
+                }
+            })
+        }
+    </script>
+}
+

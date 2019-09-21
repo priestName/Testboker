@@ -4,8 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Testboker.IBLL;
-using Testboker.Model;
 using TestBoker.Models;
+using Testboker.Model;
+using System.Web.Script.Serialization;
 
 namespace TestBoker.Controllers
 {
@@ -15,9 +16,14 @@ namespace TestBoker.Controllers
         public ExhibitionIBLL exhibitionBLL { get; set; }
         public ActionResult Index()
         {
-            ExhibitionViewModel exhibitionViewModel = new ExhibitionViewModel();
-            exhibitionViewModel.exhibitionList = exhibitionBLL.GetEntities(e => true);
-            return View(exhibitionViewModel);
+            return View();
+        }
+        public string ExhibitionList()
+        {
+            IEnumerable<Exhibition> contentList = null;
+            contentList = exhibitionBLL.GetEntitiesByPpage(10, Convert.ToInt32(Request.Form["pageIndex"]), true, c => c.IsShow == true, c => c.Time);
+            JavaScriptSerializer jss = new JavaScriptSerializer();
+            return jss.Serialize(contentList);
         }
     }
 }

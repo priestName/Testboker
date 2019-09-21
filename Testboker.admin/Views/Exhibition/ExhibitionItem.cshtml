@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Testboker.Model.Exhibition>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ExhibitionItem</title>
+    <link href="~/Content/Css/Content.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Content/Css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <script src="~/scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/scripts/Default.js"></script>
+    <script src="~/scripts/xcConfirm/xcConfirm.js"></script>
+    <link href="~/scripts/xcConfirm/Css/xcConfirm.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="ItemMain">
+        <ul>
+            <li><label>标&nbsp;&nbsp;&nbsp;&nbsp;题：</label><input type="text" value="@Model.First().Title" class="Title" /></li>
+            <li><label>地&nbsp;&nbsp;&nbsp;&nbsp;址：</label><input type="text" value="@Model.First().Src" class="SrcUrl" /></li>
+            <li>
+                <label>是否展示：</label>
+                <input type="radio" id="IsShowY" class="IsShow" name="IsShow" checked="checked" /><label for="IsShowY">是</label>
+                <input type="radio" id="IsShowN" class="IsShow" name="IsShow" /><label for="IsShowN">否</label>
+            </li>
+            <li>
+                <label>截&nbsp;&nbsp;&nbsp;&nbsp;图：</label><img src="/Content/ContentImg/@Model.First().Img" class="Img" />
+                <input type="file" id="ImgFile" style="display:none" accept="image/*" />
+                <input type="hidden" value="" class="ImgName" />
+
+            </li>
+            <li><label>介&nbsp;&nbsp;&nbsp;&nbsp;绍：</label><textarea class="Synopsis">@Model.First().Synopsis</textarea></li>
+        </ul>
+        <div class="BtnBox">
+            <input type="button" class="BtnOk" value="保存" />
+            <input type="button" class="BtnNo" value="取消" onclick="Javascript: history.go(-1);" />
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            if("@Model.First().IsShow.ToString().ToLower()"=="true")
+                document.getElementById("IsShowY").checked=true
+            else
+                document.getElementById("IsShowN").checked = true
+
+            $(".BtnOk").click(function () {
+                $.ajax({
+                    url: "@Url.Action("EditAndUpdate", "Exhibition")",
+                    type: "post",
+                    data: {
+                        id:@Model.First().Id,
+                        Title: $(".Title").val(),
+                        SrcUrl: $(".SrcUrl").val(),
+                        IsShow: $(".IsShowY").attr("checked") =="checked"?1:0,
+                        ImgName: $(".ImgName").val(),
+                        Synopsis: $(".Synopsis").val()
+                    },
+                    success: function (result) {
+                        if (result.toLowerCase() == "true") {
+                            window.wxc.xcConfirm("修改成功", window.wxc.xcConfirm.typeEnum.success);
+                            $(".ok,.clsBtn").click(function () {
+                                $(".BtnNo").click();
+                            })
+                        }
+                        else
+                            window.wxc.xcConfirm("修改失败!", window.wxc.xcConfirm.typeEnum.error);
+                        setTimeout(function () { $(".ok").click() }, 2000)
+                    }
+                })
+            })
+
+
+            $(".Img").click(function () {
+                $("#ImgFile").click()
+            })
+            $("#ImgFile").change(function (e) {
+                $(".ImgName").val(e.currentTarget.files[0].name)
+                var reader = new FileReader();
+                reader.readAsDataURL(this.files[0]);
+                reader.onload = function (e) {
+                    $(".Img").attr("src", this.result)
+                };
+            })
+        })
+    </script>
+</body >
+</html >

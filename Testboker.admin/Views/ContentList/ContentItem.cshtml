@@ -48,23 +48,23 @@
             $(".Label").val("@Model.First().Label")
             $(".Content").text("@Model.First().Content")
             if("@Model.First().IsShow.ToString().ToLower()"=="true")
-        document.getElementById("IsShowY").checked=true
+                document.getElementById("IsShowY").checked=true
             else
                 document.getElementById("IsShowN").checked=true
 
             $(".BtnOk").click(function () {
-            $.ajax({
-            url: "@Url.Action("EditContent", "ContentList")",
+                $.ajax({
+                    url: "@Url.Action("EditContent", "ContentList")",
                     type: "post",
                     data: {
-                id: @Model.First().Id,
-                        Title: $(".Title").val(),
-                        ImgName: $(".ImgName").val(),//$(".Img").attr("src").substring($(".Img").attr("src").lastIndexOf('/')+1)
-                        ImgBase: $(".Img").attr("src"),
-                        Label: $(".Label").val(),
-                        Author:$(".Author").val(),
-                        IsShow:document.getElementById("IsShowY").checked==true?1:0,
-                        Content:$(".Content").val()
+                            id: @Model.First().Id,
+                            Title: $(".Title").val(),
+                            ImgName: $(".ImgName").val(),//$(".Img").attr("src").substring($(".Img").attr("src").lastIndexOf('/')+1)
+                            ImgBase: $(".Img").attr("src"),
+                            Label: $(".Label").val(),
+                            Author:$(".Author").val(),
+                            IsShow:document.getElementById("IsShowY").checked==true?1:0,
+                            Content:$(".Content").val()
                     },
                     success: function (result) {
                     if (result.toLowerCase() == "true")
@@ -78,7 +78,7 @@
                         window.wxc.xcConfirm("修改失败", window.wxc.xcConfirm.typeEnum.error);
                     setTimeout(function () { $(".ok").click() }, 2000)
                     }
-            })
+                })
             })
             $(".Img").click(function(){
                 $("#ImgFile").click()
@@ -86,11 +86,11 @@
             $("#ImgFile").change(function(e){
                 $(".ImgName").val(e.currentTarget.files[0].name)
                 var reader = new FileReader();
-            reader.readAsDataURL(this.files[0]);
-            reader.onload = function(e) {
-                    $(".Img").attr("src",this.result)
+                reader.readAsDataURL(this.files[0]);
+                reader.onload = function(e) {
+                        $(".Img").attr("src",this.result)
                 };
-        })
+            })
 
     })
     </script>
